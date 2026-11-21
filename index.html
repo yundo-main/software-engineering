@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SW 자료실</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: 가이드 세 권을 개발 순서대로 잇는 자료실 첫 페이지 */
+:root{
+  --bg:#f5f7f8; --surface:#ffffff; --ink:#15212b; --muted:#5a6a76; --line:#d7dfe4; --grid:#e8eef1; --accent:#0e6e78;
+  --c-req:#7a5a14; --c-req-bg:#f6eedb; --c-sdlc:#4b4f9e; --c-sdlc-bg:#e7e8f7; --c-uml:#0e6e78; --c-uml-bg:#dff0f1;
+  --font-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#0f161b; --surface:#16212a; --ink:#e3eaee; --muted:#93a4af; --line:#2a3842; --grid:#1b2831; --accent:#5cc3cc;
+  --c-req:#e0b65c; --c-req-bg:#33290f; --c-sdlc:#a4a8f0; --c-sdlc-bg:#24264a; --c-uml:#5cc3cc; --c-uml-bg:#163a3f;
+  color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.7;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{padding-block:64px 32px}
+.eyebrow{font-family:var(--font-mono);font-size:.8125rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:clamp(2.2rem,5vw,3.4rem);letter-spacing:-.02em;line-height:1.15;margin:10px 0 0;text-wrap:balance}
+.lead{color:var(--muted);max-width:56ch;font-size:1.05rem;margin:14px 0 0}
+.shelf{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:12px;align-items:stretch;padding-bottom:40px}
+.arrow{align-self:center;color:var(--muted);font-size:1.4rem}
+.book{background:var(--surface);border:1px solid var(--line);border-top:6px solid var(--c);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.book .step{font-family:var(--font-mono);font-size:.8rem;color:var(--c);font-weight:500}
+.book h2{margin:0;font-size:1.35rem}
+.book p{margin:0;font-size:.95rem;color:var(--muted)}
+.book ul{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.book li{font-size:.82rem;padding:1px 10px;border-radius:999px;background:var(--cb);color:var(--c)}
+.links{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:8px}
+.links a{text-decoration:none;font-weight:600;font-size:.92rem;border-radius:8px;padding:8px 14px;border:1.5px solid var(--c)}
+.links a.open{background:var(--c);color:var(--surface)}
+.links a.web{color:var(--c)}
+.links a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.req{--c:var(--c-req);--cb:var(--c-req-bg)} .sdlc{--c:var(--c-sdlc);--cb:var(--c-sdlc-bg)} .uml{--c:var(--c-uml);--cb:var(--c-uml-bg)}
+footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--muted);font-size:.85rem}
+@media (max-width:860px){.shelf{grid-template-columns:1fr}.arrow{transform:rotate(90deg);justify-self:center}}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <div class="eyebrow">SW 자료실 · 3권</div>
+  <h1>요구에서 설계까지,<br>개발 순서대로.</h1>
+  <p class="lead">무엇을 만들지 정하고(요구사항), 어떻게 진행할지 고르고(개발 방법론), 설계를 그림으로 약속합니다(UML). 왼쪽부터 차례로 읽으면 흐름이 이어집니다.</p>
+</header>
+<main class="wrap shelf">
+  <article class="book req">
+    <span class="step">1 · 무엇을 만들까</span>
+    <h2>요구사항 가이드</h2>
+    <p>요구의 종류와 도출 → 분석 → 명세 → 확인 단계, 유저 스토리와 수락 기준.</p>
+    <ul><li>기능·비기능</li><li>도출 기법 7</li><li>ISO 25010</li><li>INVEST</li></ul>
+    <div class="links"><a class="open" href="requirements/req-guide.html">열기</a><a class="web" href="https://claude.ai/artifact/XHnprXCZKSrTesQcYSG7vL" target="_blank" rel="noopener">온라인</a></div>
+  </article>
+  <span class="arrow" aria-hidden="true">→</span>
+  <article class="book sdlc">
+    <span class="step">2 · 어떻게 진행할까</span>
+    <h2>개발 방법론 가이드</h2>
+    <p>생명주기 모델과 개발 방법론 두 축, 애자일, 디자인 패턴과 SOLID.</p>
+    <ul><li>폭포수·애자일</li><li>방법론 6</li><li>GoF 23</li><li>선택 도우미</li></ul>
+    <div class="links"><a class="open" href="dev-methodology/sdlc-guide.html">열기</a><a class="web" href="https://claude.ai/artifact/YCbMzAvbuygF4cgGzBVb19" target="_blank" rel="noopener">온라인</a></div>
+  </article>
+  <span class="arrow" aria-hidden="true">→</span>
+  <article class="book uml">
+    <span class="step">3 · 어떻게 그릴까</span>
+    <h2>UML 가이드</h2>
+    <p>다이어그램 14종을 구조·행위로 나누고, 관계 기호 6가지를 그림으로.</p>
+    <ul><li>클래스·시퀀스</li><li>관계 6</li><li>가시성</li><li>다이어그램 14</li></ul>
+    <div class="links"><a class="open" href="uml/uml-guide.html">열기</a><a class="web" href="https://claude.ai/artifact/2UJpRrUVzEVPcfEfN4HdRq" target="_blank" rel="noopener">온라인</a></div>
+  </article>
+</main>
+<footer class="wrap">각 가이드는 실무 이해를 위한 자료이며, 정보처리기사 출제 항목에는 기출 표시가 있습니다. 온라인 링크는 공유 설정을 한 사람만 열 수 있습니다.</footer>
+</body>
+</html>

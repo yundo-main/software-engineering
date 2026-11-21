@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>요구사항 가이드</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f5f7f8; --surface:#ffffff; --ink:#15212b; --muted:#5a6a76; --line:#d7dfe4; --grid:#e8eef1;
+  --accent:#0e6e78; --accent-soft:#dff0f1;
+  --f-trad:#7a5a14; --f-trad-bg:#f6eedb;
+  --f-struct:#4b4f9e; --f-struct-bg:#e7e8f7;
+  --f-agile:#0e6e78; --f-agile-bg:#dff0f1;
+  --f-modern:#9c3d5a; --f-modern-bg:#f7e3ea;
+  --f-pattern:#3f6b2a; --f-pattern-bg:#e5f0dc;
+  --good:#2f7d3a; --good-bg:#e3f2e4; --bad:#b3372f; --bad-bg:#f8e3e1;
+  --font-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --s-1:.8125rem; --s0:1rem; --s1:1.25rem; --s2:1.625rem; --s3:2.25rem;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f161b; --surface:#16212a; --ink:#e3eaee; --muted:#93a4af; --line:#2a3842; --grid:#1b2831;
+  --accent:#5cc3cc; --accent-soft:#163a3f;
+  --f-trad:#e0b65c; --f-trad-bg:#33290f; --f-struct:#a4a8f0; --f-struct-bg:#24264a;
+  --f-agile:#5cc3cc; --f-agile-bg:#163a3f; --f-modern:#ec8eab; --f-modern-bg:#3e1c28; --f-pattern:#9fd17f; --f-pattern-bg:#1f3317; --good:#7fd08a; --good-bg:#18331c; --bad:#f08a80; --bad-bg:#3d1b18;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f161b; --surface:#16212a; --ink:#e3eaee; --muted:#93a4af; --line:#2a3842; --grid:#1b2831;
+  --accent:#5cc3cc; --accent-soft:#163a3f;
+  --f-trad:#e0b65c; --f-trad-bg:#33290f; --f-struct:#a4a8f0; --f-struct-bg:#24264a;
+  --f-agile:#5cc3cc; --f-agile-bg:#163a3f; --f-modern:#ec8eab; --f-modern-bg:#3e1c28; --f-pattern:#9fd17f; --f-pattern-bg:#1f3317; --good:#7fd08a; --good-bg:#18331c; --bad:#f08a80; --bad-bg:#3d1b18;
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:var(--s0);line-height:1.7;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:32px 32px;}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{text-wrap:balance;line-height:1.3;margin:0}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.eyebrow{font-family:var(--font-mono);font-size:var(--s-1);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* header + tabs */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;gap:20px;padding-block:12px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:1.05rem;display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none}
+.brand-mark{width:22px;height:22px;border:2px solid var(--accent);border-radius:4px;position:relative}
+.brand-mark::after{content:"";position:absolute;inset:4px 4px auto auto;width:8px;height:8px;background:var(--accent)}
+nav.links{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+nav.links a{color:var(--muted);text-decoration:none;font-size:.9rem;padding:4px 10px;border-radius:6px;display:inline-flex;align-items:center;gap:6px}
+nav.links a:hover{color:var(--ink);background:var(--grid)}
+nav.links a[aria-selected="true"]{color:var(--ink);font-weight:600;background:var(--accent-soft);box-shadow:inset 0 -2px 0 var(--accent)}
+nav.links .sep{width:1px;background:var(--line);margin:4px 4px}
+nav.links a .dot{width:8px;height:8px}
+.tab-pager{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:8px 32px}
+.tab-pager a{display:inline-flex;flex-direction:column;gap:2px;text-decoration:none;color:var(--ink);border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 16px;min-width:160px}
+.tab-pager a:hover{border-color:var(--accent)}
+.tab-pager a small{font-family:var(--font-mono);font-size:var(--s-1);color:var(--muted)}
+.tab-pager a.next{margin-left:auto;text-align:right}
+
+/* hero */
+.hero-band{background:var(--surface);border-bottom:1px solid var(--line);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px}
+.hero{padding-block:72px 40px;display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center}
+.hero > *{min-width:0}
+.hero h1{font-size:clamp(2.6rem,6vw,4.4rem);font-weight:700;letter-spacing:-.03em;line-height:1.08;margin-top:14px}
+.hero h1 .hl{color:var(--accent);position:relative}
+.hero h1 .hl::after{content:"";position:absolute;left:0;right:0;bottom:.06em;height:.12em;background:var(--accent);opacity:.25;border-radius:2px}
+.hero p.lead{margin-top:20px;color:var(--muted);max-width:52ch;font-size:1.1rem}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.btn{display:inline-flex;align-items:center;padding:11px 20px;border-radius:8px;font-weight:600;text-decoration:none;font-size:.98rem;border:1.5px solid var(--accent)}
+.btn.primary{background:var(--accent);color:var(--surface)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{color:var(--accent);background:transparent}
+.btn.ghost:hover{background:var(--accent-soft)}
+.stats{display:flex;gap:36px;margin:36px 0 0;flex-wrap:wrap}
+.stats div{display:grid;gap:2px}
+.stats dt{font-family:var(--font-mono);font-size:var(--s-1);letter-spacing:.04em;color:var(--muted)}
+.stats dd{margin:0;font-size:2rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
+.hero-art svg{display:block;width:100%;height:auto;max-width:480px;margin-left:auto}
+.hero-art text{font-family:var(--font-body)}
+.spin{transform-origin:0 0;animation:spin 14s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.spin{animation:none}}
+.fam-strip{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--line);border-radius:10px;background:var(--bg);margin-bottom:32px;overflow:hidden}
+.fam-strip a{display:flex;align-items:center;gap:10px;padding:14px 18px;text-decoration:none;color:var(--ink);border-right:1px solid var(--line);font-size:.95rem}
+.fam-strip a:last-child{border-right:none}
+.fam-strip a:hover{background:var(--grid)}
+.fam-strip b{margin-left:auto;font-family:var(--font-mono);font-weight:500;color:var(--muted);font-size:var(--s-1)}
+.dot{width:12px;height:12px;border-radius:3px;flex:none;display:inline-block}
+.d-trad{background:var(--f-trad)}.d-struct{background:var(--f-struct)}.d-agile{background:var(--f-agile)}.d-modern{background:var(--f-modern)}.d-pattern{background:var(--f-pattern)}
+
+/* sections */
+section.block{padding-block:40px}
+.sec-head{display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;margin-bottom:20px;border-bottom:2px solid var(--ink);padding-bottom:10px}
+.sec-head h2{font-size:var(--s2)}
+.sec-head p{color:var(--muted);font-size:.95rem}
+
+/* two axes */
+.axes{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.axis{background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--fam);border-radius:10px;padding:20px;display:grid;gap:10px;align-content:start;min-width:0}
+.axis .eyebrow{color:var(--fam)}
+.axis h3{font-size:var(--s1)}
+.axis .q{font-size:1.05rem;font-weight:600}
+.axis .q em{font-style:normal;color:var(--fam)}
+.axis .chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:.85rem;padding:2px 10px;border-radius:999px;background:var(--fam-bg);color:var(--fam);text-decoration:none;font-weight:500}
+.axis .analogy{font-size:.9rem;color:var(--muted)}
+.combine{margin-top:20px}
+.combine h3{font-size:var(--s1);margin-bottom:10px}
+.callouts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.callout{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:16px 18px;font-size:.93rem;display:grid;gap:6px;min-width:0}
+.callout b{font-size:.98rem}
+.callout .ans{font-family:var(--font-mono);font-size:.85rem;color:var(--muted)}
+.exam{display:inline-block;vertical-align:.2em;margin-left:6px;font-family:var(--font-mono);font-size:.68rem;font-weight:600;letter-spacing:.04em;line-height:1.5;padding:0 6px;border-radius:4px;border:1px solid var(--muted);color:var(--muted);white-space:nowrap}
+.exam-toggle{display:inline-flex;align-items:center;gap:8px;font-size:.9rem;cursor:pointer}
+body.hide-exam .exam{display:none}
+
+/* timeline */
+.timeline{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 8px 8px}
+.timeline svg{display:block;min-width:820px;width:100%;height:auto}
+.timeline text{font-family:var(--font-body)}
+.tl-legend{display:flex;gap:18px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);padding:6px 12px 4px}
+.tl-legend span{display:inline-flex;align-items:center;gap:6px}
+.tl-legend .dot{width:10px;height:10px;border-radius:50%}
+
+/* family band */
+.family{border-left:6px solid var(--fam);padding-left:20px;margin-bottom:16px}
+.family .eyebrow{color:var(--fam)}
+.family h2{font-size:var(--s2);margin-top:4px}
+.family p.desc{color:var(--muted);margin-top:6px;max-width:70ch}
+.fam-trad{--fam:var(--f-trad);--fam-bg:var(--f-trad-bg)}
+.fam-struct{--fam:var(--f-struct);--fam-bg:var(--f-struct-bg)}
+.fam-agile{--fam:var(--f-agile);--fam-bg:var(--f-agile-bg)}
+.fam-modern{--fam:var(--f-modern);--fam-bg:var(--f-modern-bg)}
+.fam-pattern{--fam:var(--f-pattern);--fam-bg:var(--f-pattern-bg)}
+
+/* design patterns */
+.sub-h{font-size:var(--s1);margin:40px 0 12px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.sub-h small{font-size:.9rem;font-weight:400;color:var(--muted)}
+.layers{display:grid;gap:8px;margin-top:20px}
+.layer{display:grid;grid-template-columns:150px 1fr auto;gap:16px;align-items:center;background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--lc);border-radius:8px;padding:12px 16px;min-width:0}
+.layer:nth-child(2){margin-left:4%}.layer:nth-child(3){margin-left:8%}.layer:nth-child(4){margin-left:12%;border-width:2px 2px 2px 5px;border-color:var(--fam)}
+.layer b{font-size:.98rem}
+.layer span{color:var(--muted);font-size:.92rem}
+.layer i{font-style:normal;font-size:.85rem;color:var(--muted);text-align:right}
+.l-a{--lc:var(--f-trad)}.l-b{--lc:var(--f-struct)}.l-c{--lc:var(--muted)}.l-d{--lc:var(--f-pattern)}
+.pbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.pbar button{font:inherit;font-size:.9rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 14px;cursor:pointer}
+.pbar button b{font-family:var(--font-mono);font-weight:500;color:var(--muted);margin-left:4px;font-size:.8rem}
+.pbar button[aria-pressed="true"]{background:var(--fam);border-color:var(--fam);color:var(--surface)}
+.pbar button[aria-pressed="true"] b{color:var(--surface)}
+.pbar input{font:inherit;font-size:.92rem;margin-left:auto;min-width:0;width:260px;max-width:100%;padding:6px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.pcard .ptop{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.pcard h4{margin:0;font-size:1.05rem}
+.pcard .en{font-family:var(--font-mono);font-size:var(--s-1);color:var(--muted)}
+.pcat{font-size:.75rem;padding:1px 8px;border-radius:999px;background:var(--fam-bg);color:var(--fam);font-weight:600;white-space:nowrap}
+.pcard p{font-size:.92rem}
+.pcard .kv{font-size:.86rem}
+.pcard .warn{font-size:.84rem;color:var(--f-modern)}
+.pempty{color:var(--muted);padding:20px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.problem td:nth-child(2){font-weight:600;white-space:nowrap;color:var(--fam)}
+.solid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.solid div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:4px;align-content:start;min-width:0}
+.solid .L{font-family:var(--font-mono);font-size:1.8rem;font-weight:500;color:var(--fam);line-height:1}
+.solid b{font-size:.95rem}
+.solid span{font-size:.86rem;color:var(--muted)}
+@media (max-width:980px){.solid{grid-template-columns:repeat(2,1fr)}}
+
+html{scroll-padding-top:84px}
+.jump{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:.88rem;color:var(--muted);margin:4px 0 8px}
+.jump a{text-decoration:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:2px 12px;color:var(--ink)}
+.jump a:hover{border-color:var(--accent);color:var(--accent)}
+
+/* overview flow diagram */
+.flow{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 8px 6px;overflow-x:auto;margin-bottom:8px}
+.flow svg{display:block;width:100%;min-width:760px;height:auto}
+.flow text{font-family:var(--font-body)}
+.flow a{cursor:pointer}
+.flow a:hover rect{stroke-width:2.5}
+.flow a:focus-visible rect{stroke-width:3}
+.flow-note{font-size:.9rem;color:var(--muted);margin:0 0 20px}
+.ov li b svg{width:16px;height:16px;vertical-align:-3px;margin-right:5px;fill:none;stroke:var(--fam);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* overview tab */
+.ov-axes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.ov-axes div{border-left:4px solid var(--fam);background:var(--surface);border-radius:6px;padding:10px 14px;min-width:0}
+.ov-axes b{display:block;font-size:.95rem}
+.ov-axes span{font-size:.88rem;color:var(--muted)}
+.ov{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;align-items:start}
+.ov section{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--fam);border-radius:10px;padding:14px 16px;min-width:0}
+.ov h3{font-size:1rem;margin:0 0 8px;display:flex;align-items:baseline;gap:6px}
+.ov h3 a{color:var(--ink);text-decoration:none}
+.ov h3 a:hover{color:var(--accent)}
+.ov h3 small{font-family:var(--font-mono);font-weight:500;font-size:var(--s-1);color:var(--muted)}
+.ov ul{list-style:none;margin:0;padding:0;display:grid}
+.ov li{display:grid;grid-template-columns:96px 1fr;gap:10px;padding:5px 0;border-top:1px solid var(--grid);font-size:.88rem}
+.ov li:first-child{border-top:none}
+.ov li b{font-weight:600}
+.ov li span{color:var(--muted)}
+.ov h4{font-size:.8rem;margin:10px 0 2px;color:var(--fam);font-family:var(--font-mono);letter-spacing:.04em}
+@media (max-width:700px){.ov-axes{grid-template-columns:1fr}}
+
+/* cert tab */
+.cert-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.cert-list section{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--fam);border-radius:10px;padding:14px 16px;display:grid;gap:8px;align-content:start;min-width:0}
+.cert-list h4{margin:0;font-size:1rem}
+.cert-list h4 a{color:var(--ink);text-decoration:none}
+.cert-list h4 a:hover{color:var(--accent)}
+.cert-list ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.cert-list li{font-size:.84rem;padding:1px 9px;border-radius:999px;background:var(--fam-bg);color:var(--fam)}
+.memo{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.memo div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:6px;align-content:start;min-width:0}
+.memo b{font-size:.98rem}
+.memo b small{font-family:var(--font-mono);font-weight:500;color:var(--muted);margin-left:6px}
+.memo ol,.memo ul{margin:0;padding-left:1.2em;font-size:.9rem}
+.memo p{font-size:.9rem;color:var(--muted)}
+.pairs td:first-child{font-weight:600;white-space:nowrap}
+.quiz{background:var(--surface);border:2px solid var(--accent);border-radius:12px;padding:20px;display:grid;gap:16px}
+.quiz-top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.quiz-areas{display:flex;flex-wrap:wrap;gap:6px}
+.quiz-areas button,.qbtn{font:inherit;font-size:.9rem;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer}
+.quiz-areas button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
+.qbtn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface);font-weight:600}
+.qprog{font-family:var(--font-mono);font-size:var(--s-1);color:var(--muted);font-variant-numeric:tabular-nums}
+.qbar{height:6px;background:var(--grid);border-radius:999px;overflow:hidden}
+.qbar span{display:block;height:100%;background:var(--accent)}
+.qtext{font-size:1.1rem;font-weight:600}
+.qkind{font-family:var(--font-mono);font-size:var(--s-1);color:var(--muted);letter-spacing:.04em}
+.qchoices{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.qchoices button{font:inherit;text-align:left;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:10px 14px;cursor:pointer}
+.qchoices button:hover:not(:disabled){border-color:var(--accent)}
+.qchoices button:disabled{cursor:default}
+.qchoices button.right{border-color:var(--good);background:var(--good-bg);font-weight:600}
+.qchoices button.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.qfeed{font-size:.92rem;min-height:1.5em}
+.qfeed.ok{color:var(--good)}.qfeed.no{color:var(--bad)}
+.qactions{display:flex;flex-wrap:wrap;gap:8px}
+.qscore{font-size:2rem;font-weight:700;font-variant-numeric:tabular-nums}
+.qwrong{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.qwrong li{border-left:3px solid var(--bad);padding:4px 12px;font-size:.92rem}
+.qwrong li b{color:var(--good)}
+@media (max-width:560px){.qchoices{grid-template-columns:1fr}}
+@media (max-width:640px){.layer{grid-template-columns:1fr;gap:2px}.layer i{text-align:left}.layer:nth-child(n){margin-left:0}.pbar input{margin-left:0;width:100%}.solid{grid-template-columns:1fr}}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-top:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.card h3{font-size:var(--s1)}
+.card .en{font-family:var(--font-mono);font-size:var(--s-1);color:var(--muted)}
+.year{font-family:var(--font-mono);font-size:var(--s-1);background:var(--fam-bg);color:var(--fam);padding:2px 8px;border-radius:4px;white-space:nowrap}
+.card p{font-size:.95rem}
+.card .more{font-size:.9rem;font-weight:600;text-decoration:none;margin-top:auto}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:.9rem;margin:0}
+.kv dt{color:var(--muted);font-weight:500}
+.kv dd{margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:.8rem;border:1px solid var(--line);padding:1px 8px;border-radius:999px;color:var(--muted)}
+.fig{background:var(--bg);border-radius:8px;padding:10px;overflow-x:auto}
+.fig svg{display:block;width:100%;height:auto;max-width:100%}
+.fig text{font-family:var(--font-body)}
+.mini{display:grid;gap:8px;font-size:.9rem;margin:0}
+.mini div{display:grid;grid-template-columns:90px 1fr;gap:10px}
+.mini dt{font-weight:600}
+.mini dd{margin:0;color:var(--muted)}
+
+/* manifesto */
+.manifesto{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:20px}
+.m-item{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:grid;gap:4px;min-width:0}
+.m-item b{color:var(--f-agile);font-size:1.05rem}
+.m-item span{color:var(--muted);font-size:.9rem}
+
+/* tables */
+.table-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:.92rem}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+thead th{font-weight:600;background:var(--grid)}
+tbody tr:last-child td{border-bottom:none}
+td.name{font-weight:600;white-space:nowrap}
+td.name .dot{margin-right:8px;vertical-align:-1px}
+.matrix th[scope="row"]{white-space:nowrap;color:var(--f-struct)}
+.matrix thead th:not(:first-child){color:var(--f-trad)}
+.matrix td.hit{background:var(--accent-soft);font-weight:600}
+.matrix td.no{color:var(--muted)}
+.axis-pill{font-size:.78rem;padding:1px 8px;border-radius:999px;white-space:nowrap;background:var(--fam-bg);color:var(--fam);font-weight:600}
+.meter{display:inline-flex;gap:3px;vertical-align:middle}
+.meter i{width:10px;height:10px;border-radius:2px;background:var(--line)}
+.meter i.on{background:var(--accent)}
+
+/* chooser */
+.chooser{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.chooser > *{min-width:0}
+.q-panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;gap:18px}
+.q-group{display:grid;gap:14px}
+.q-group > .eyebrow{color:var(--fam)}
+fieldset{border:none;padding:0;margin:0;display:grid;gap:8px}
+legend{font-weight:600;margin-bottom:6px;padding:0}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{border:1px solid var(--line);border-radius:6px;padding:6px 12px;cursor:pointer;font-size:.9rem;background:var(--bg)}
+.seg input:checked + label{border-color:var(--accent);background:var(--accent-soft);color:var(--ink);font-weight:600}
+.seg input:focus-visible + label{outline:2px solid var(--accent);outline-offset:2px}
+.result{background:var(--surface);border:2px solid var(--accent);border-radius:10px;padding:20px;display:grid;gap:16px;align-content:start}
+.combo{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:var(--s1);font-weight:700}
+.combo span{padding:4px 12px;border-radius:8px;background:var(--fam-bg);color:var(--fam)}
+.combo i{font-style:normal;color:var(--muted);font-weight:500}
+.rank{display:grid;gap:10px;list-style:none;padding:0;margin:0}
+.rank li{display:grid;grid-template-columns:110px 1fr 40px;gap:10px;align-items:center;font-size:.92rem}
+.bar{height:10px;background:var(--grid);border-radius:999px;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--accent);border-radius:999px;transition:width .3s}
+@media (prefers-reduced-motion: reduce){.bar span{transition:none}}
+.rank .pct{font-family:var(--font-mono);font-size:var(--s-1);color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.note{font-size:.88rem;color:var(--muted)}
+.sub{font-weight:600;font-size:.95rem}
+
+/* glossary */
+.gloss{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0;border:1px solid var(--line);border-radius:10px;background:var(--surface);overflow:hidden;margin:0}
+.gloss div{padding:14px 16px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);min-width:0}
+.gloss dt{font-weight:600}
+.gloss dd{margin:2px 0 0;color:var(--muted);font-size:.9rem}
+
+footer{padding-block:32px 48px;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);margin-top:24px}
+
+@media (max-width:820px){
+  .hero{grid-template-columns:1fr;padding-block:40px 24px;gap:28px}
+  .hero-art svg{margin:0 auto;max-width:380px}
+  .fam-strip{grid-template-columns:1fr}
+  .fam-strip a{border-right:none;border-bottom:1px solid var(--line);padding:11px 16px}
+  .fam-strip a:last-child{border-bottom:none}
+  .stats{gap:24px}
+  .chooser,.manifesto,.axes,.callouts{grid-template-columns:1fr}
+  nav.links{margin-left:0;width:100%;overflow-x:auto;flex-wrap:nowrap}
+  nav.links a{white-space:nowrap}
+}
+@media (max-width:420px){
+  .cards{grid-template-columns:1fr}
+  .rank li{grid-template-columns:90px 1fr 36px}
+  :root{--s3:1.85rem;--s2:1.4rem}
+}
+</style>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#home"><span class="brand-mark" aria-hidden="true"></span>요구사항 가이드</a>
+    <nav class="links" role="tablist" aria-label="가이드 탭">
+      <a role="tab" href="#home" data-tab="home">홈</a>
+      <a role="tab" href="#overview" data-tab="overview">한눈에 보기</a>
+      <a role="tab" href="#types" data-tab="types"><i class="dot d-trad"></i>요구사항 종류</a>
+      <a role="tab" href="#process" data-tab="process"><i class="dot d-struct"></i>개발 단계</a>
+      <a role="tab" href="#practice" data-tab="practice"><i class="dot d-agile"></i>실무 도구</a>
+      <span class="sep" aria-hidden="true"></span>
+      <a role="tab" href="#chooser" data-tab="chooser">비교·선택</a>
+      <a role="tab" href="#cert" data-tab="cert">자격증 대비</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero-band">
+    <div class="wrap hero">
+      <div class="hero-copy">
+        <div class="eyebrow">Requirements Engineering</div>
+        <h1>말한 것과<br><span class="hl">필요한 것</span> 사이.</h1>
+        <p class="lead">요구사항은 "무엇을 만들지"에 대한 약속입니다. <b>어떤 종류가 있는지</b>와 <b>어떤 단계로 다루는지</b> 두 가지로 나눠 보면, 인터뷰부터 수락 기준까지 한 번에 정리됩니다.</p>
+        <div class="cta">
+          <a class="btn primary" href="#process">개발 단계부터 보기</a>
+          <a class="btn ghost" href="#chooser">상황별 기법 찾기</a>
+        </div>
+        <dl class="stats">
+          <div><dt>개발 단계</dt><dd>4</dd></div>
+          <div><dt>도출 기법</dt><dd>7</dd></div>
+          <div><dt>품질 특성</dt><dd>8</dd></div>
+        </dl>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 440 360">
+          <g font-size="14" text-anchor="middle">
+            <rect x="30" y="40" width="160" height="64" rx="10" fill="var(--f-struct-bg)" stroke="var(--f-struct)" stroke-width="1.5"/><text x="110" y="70" fill="var(--ink)" font-weight="700">1 도출</text><text x="110" y="90" font-size="11.5" fill="var(--muted)">듣고 찾아낸다</text>
+            <rect x="250" y="40" width="160" height="64" rx="10" fill="var(--f-struct-bg)" stroke="var(--f-struct)" stroke-width="1.5"/><text x="330" y="70" fill="var(--ink)" font-weight="700">2 분석</text><text x="330" y="90" font-size="11.5" fill="var(--muted)">나누고 다듬는다</text>
+            <rect x="250" y="200" width="160" height="64" rx="10" fill="var(--f-struct-bg)" stroke="var(--f-struct)" stroke-width="1.5"/><text x="330" y="230" fill="var(--ink)" font-weight="700">3 명세</text><text x="330" y="250" font-size="11.5" fill="var(--muted)">문서로 약속한다</text>
+            <rect x="30" y="200" width="160" height="64" rx="10" fill="var(--f-struct-bg)" stroke="var(--f-struct)" stroke-width="1.5"/><text x="110" y="230" fill="var(--ink)" font-weight="700">4 확인</text><text x="110" y="250" font-size="11.5" fill="var(--muted)">맞는지 검토한다</text>
+          </g>
+          <g fill="none" stroke="var(--f-struct)" stroke-width="1.5"><path d="M190 72H244"/><path d="M330 104V194"/><path d="M250 232H196"/><path d="M110 200V110" stroke-dasharray="5 4"/></g>
+          <g fill="var(--f-struct)"><polygon points="244,67 252,72 244,77"/><polygon points="325,194 330,202 335,194"/><polygon points="196,227 188,232 196,237"/><polygon points="105,110 110,102 115,110"/></g>
+          <circle cx="220" cy="152" r="34" fill="var(--f-agile-bg)" stroke="var(--f-agile)" stroke-width="1.5"/>
+          <text x="220" y="148" font-size="12" font-weight="700" fill="var(--f-agile)" text-anchor="middle">변경</text><text x="220" y="164" font-size="12" font-weight="700" fill="var(--f-agile)" text-anchor="middle">관리</text>
+          <text x="20" y="318" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono, monospace">ELICIT · ANALYZE · SPECIFY · VALIDATE</text>
+        </svg>
+      </div>
+    </div>
+    <div class="wrap">
+      <nav class="fam-strip" aria-label="탭 바로가기" style="grid-template-columns:repeat(4,1fr)">
+        <a href="#types"><i class="dot d-trad"></i><span>요구사항 종류</span><b>5</b></a>
+        <a href="#process"><i class="dot d-struct"></i><span>개발 단계</span><b>4</b></a>
+        <a href="#practice"><i class="dot d-agile"></i><span>실무 도구</span><b>5</b></a>
+        <a href="#cert"><i class="dot d-pattern"></i><span>자격증 대비</span><b>퀴즈</b></a>
+      </nav>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <!-- HOME -->
+    <section class="block" id="axes">
+      <div class="sec-head"><h2>두 가지로 나눠 보기</h2><p>무엇을 다루는지와 어떻게 다루는지를 따로 봅니다.</p></div>
+      <div class="axes">
+        <div class="axis fam-trad">
+          <div class="eyebrow">무엇을</div>
+          <h3>요구사항 종류</h3>
+          <p class="q">이 요구는 <em>어떤 성격</em>인가?</p>
+          <div class="chips"><a class="chip" href="#types">기능</a><a class="chip" href="#types">비기능</a><a class="chip" href="#types">사용자</a><a class="chip" href="#types">시스템</a><a class="chip" href="#types">품질 특성 8</a></div>
+          <p class="analogy">식당 주문으로 치면 "김치찌개 하나"는 기능, "10분 안에, 덜 맵게"는 비기능입니다.</p>
+        </div>
+        <div class="axis fam-struct">
+          <div class="eyebrow">어떻게</div>
+          <h3>개발 단계</h3>
+          <p class="q">요구를 <em>어떤 순서로</em> 다룰까?</p>
+          <div class="chips"><a class="chip" href="#elicit">도출</a><a class="chip" href="#analyze">분석</a><a class="chip" href="#specify">명세</a><a class="chip" href="#validate">확인</a></div>
+          <p class="analogy">듣고, 정리하고, 적고, 맞는지 확인합니다. 바뀌면 처음으로 돌아갑니다.</p>
+        </div>
+      </div>
+      <div class="callouts">
+        <div class="callout"><b>요구사항이 틀리면 가장 비쌉니다</b><span>설계나 코드의 실수보다 요구 오해가 늦게 드러나고, 고칠 때 손대야 할 범위도 가장 넓습니다. 그래서 확인 단계와 변경 관리가 따로 있습니다.</span></div>
+        <div class="callout"><b>정보처리기사 출제 범위 표시 <span class="exam">기출</span></b><span>이 가이드는 실무 이해를 위한 자료입니다. 출제 항목에는 기출 표시를 붙였고, 모아 보려면 <a href="#cert">자격증 대비</a> 탭을 여세요.</span><label class="exam-toggle" for="examToggle"><input type="checkbox" id="examToggle" checked> 기출 표시 보기</label></div>
+      </div>
+    </section>
+
+    <!-- OVERVIEW -->
+    <section class="block" id="overview">
+      <div class="sec-head"><h2>한눈에 보기</h2><p>모든 항목을 한 줄씩. 제목을 누르면 자세한 탭으로 이동합니다.</p></div>
+      <nav class="jump" aria-label="이 탭 안의 섹션">이 탭 안에서 <a href="#overview">항목 요약</a><a href="#glossary">핵심 용어</a></nav>
+      <div class="flow">
+        <svg viewBox="0 0 980 230" role="img" aria-label="요구사항 개발 4단계와 단계별 대표 기법, 그리고 변경 관리 흐름도">
+          <defs><marker id="rq-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
+          <g font-size="14" text-anchor="middle">
+            <a href="#elicit"><rect x="40" y="30" width="180" height="48" rx="8" fill="var(--f-struct-bg)" stroke="var(--f-struct)" stroke-width="1.5"/><text x="130" y="59" fill="var(--ink)" font-weight="700">1 도출</text></a>
+            <a href="#analyze"><rect x="280" y="30" width="180" height="48" rx="8" fill="var(--f-struct-bg)" stroke="var(--f-struct)" stroke-width="1.5"/><text x="370" y="59" fill="var(--ink)" font-weight="700">2 분석</text></a>
+            <a href="#specify"><rect x="520" y="30" width="180" height="48" rx="8" fill="var(--f-struct-bg)" stroke="var(--f-struct)" stroke-width="1.5"/><text x="610" y="59" fill="var(--ink)" font-weight="700">3 명세</text></a>
+            <a href="#validate"><rect x="760" y="30" width="180" height="48" rx="8" fill="var(--f-struct-bg)" stroke="var(--f-struct)" stroke-width="1.5"/><text x="850" y="59" fill="var(--ink)" font-weight="700">4 확인</text></a>
+          </g>
+          <g fill="none" stroke="var(--muted)" stroke-width="1.25" marker-end="url(#rq-arrow)"><path d="M220 54H278"/><path d="M460 54H518"/><path d="M700 54H758"/></g>
+          <g font-size="12" fill="var(--muted)" text-anchor="middle">
+            <text x="130" y="102">인터뷰 · 워크숍</text><text x="130" y="119">브레인스토밍 · 관찰</text><text x="130" y="136">프로토타입 · 유스케이스</text>
+            <text x="370" y="102">분류 · 모델링</text><text x="370" y="119">우선순위(MoSCoW)</text><text x="370" y="136">타당성 검토</text>
+            <text x="610" y="102">SRS 문서</text><text x="610" y="119">정형 명세 · 비정형 명세</text><text x="610" y="136">유저 스토리</text>
+            <text x="850" y="102">동료 검토 · 워크스루</text><text x="850" y="119">인스펙션</text><text x="850" y="136">추적 매트릭스</text>
+          </g>
+          <path d="M850 150V190H20V54H38" fill="none" stroke="var(--f-agile)" stroke-width="1.25" stroke-dasharray="5 4" marker-end="url(#rq-arrow)"/>
+          <a href="#validate"><rect x="400" y="176" width="180" height="30" rx="15" fill="var(--surface)" stroke="var(--f-agile)" stroke-width="1.25"/><text x="490" y="196" font-size="12.5" fill="var(--ink)" text-anchor="middle" font-weight="600">변경 관리 · 베이스라인</text></a>
+        </svg>
+      </div>
+      <p class="flow-note">요구는 네 단계를 거쳐 확정되고, 바뀌면 변경 관리를 거쳐 도출부터 다시 돕니다. 상자를 누르면 해당 설명으로 이동합니다.</p>
+      <div class="ov">
+        <section class="fam-trad"><h3><a href="#types">요구사항 종류</a><small>5</small><span class="exam">기출</span></h3><ul>
+          <li><b>기능</b><span>시스템이 무엇을 하는가</span></li>
+          <li><b>비기능</b><span>얼마나 잘 하는가 (성능, 보안 등)</span></li>
+          <li><b>사용자</b><span>사용자 언어로 쓴 요구</span></li>
+          <li><b>시스템</b><span>개발자 언어로 자세히 쓴 요구</span></li>
+          <li><b>품질 특성</b><span>ISO/IEC 25010의 8가지</span></li>
+        </ul></section>
+        <section class="fam-struct"><h3><a href="#process">개발 단계</a><small>4</small><span class="exam">기출</span></h3><ul>
+          <li><b>도출</b><span>이해관계자에게서 요구를 찾아냄</span></li>
+          <li><b>분석</b><span>분류하고 충돌을 풀고 우선순위</span></li>
+          <li><b>명세</b><span>검증할 수 있는 문서로 기록</span></li>
+          <li><b>확인</b><span>고객이 원한 게 맞는지 검토</span></li>
+        </ul></section>
+        <section class="fam-agile"><h3><a href="#practice">실무 도구</a><small>5</small></h3><ul>
+          <li><b>유저 스토리</b><span>누가, 무엇을, 왜 한 문장</span></li>
+          <li><b>INVEST</b><span>좋은 스토리의 6가지 조건</span></li>
+          <li><b>수락 기준</b><span>Given-When-Then</span></li>
+          <li><b>스토리 맵</b><span>사용자 흐름으로 백로그 배치</span></li>
+          <li><b>MoSCoW</b><span>Must · Should · Could · Won't</span></li>
+        </ul></section>
+        <section class="fam-pattern"><h3>도구</h3><ul>
+          <li><b><a href="#compare">비교</a></b><span>도출 기법 비교표</span></li>
+          <li><b><a href="#chooser">선택 도우미</a></b><span>상황별 도출 기법 추천</span></li>
+          <li><b><a href="#glossary">용어</a></b><span>핵심 용어 (이 탭 아래)</span></li>
+          <li><b><a href="#cert">자격증 대비</a></b><span>출제 범위와 셀프 퀴즈</span></li>
+        </ul></section>
+      </div>
+    </section>
+
+    <!-- TYPES -->
+    <section class="block fam-trad" id="types">
+      <div class="family">
+        <div class="eyebrow">무엇을 · 성격</div>
+        <h2>요구사항 종류</h2>
+        <p class="desc">요구는 성격(기능/비기능)과 쓰는 수준(사용자/시스템)으로 나눕니다. 비기능은 다시 품질 특성으로 쪼개서 숫자로 확인할 수 있게 씁니다.</p>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <div class="card-top"><div><h3>기능 요구사항 <span class="exam">기출</span></h3><div class="en">Functional</div></div><span class="year">무엇을</span></div>
+          <p>시스템이 <b>무엇을 하는가</b>입니다. 입력, 처리, 출력, 저장 같은 동작으로 씁니다.</p>
+          <dl class="kv"><dt>예</dt><dd>회원은 이메일로 가입할 수 있다. 주문하면 확인 메일을 보낸다.</dd><dt>확인</dt><dd>된다 / 안 된다로 테스트</dd></dl>
+        </article>
+        <article class="card">
+          <div class="card-top"><div><h3>비기능 요구사항 <span class="exam">기출</span></h3><div class="en">Non-functional</div></div><span class="year">얼마나 잘</span></div>
+          <p>기능을 <b>얼마나 잘 하는가</b>입니다. 성능, 보안, 가용성, 사용성 같은 제약과 품질입니다.</p>
+          <dl class="kv"><dt>예</dt><dd>검색 결과는 2초 안에 보인다. 동시 접속 1만 명을 견딘다.</dd><dt>주의</dt><dd>"빠르게"처럼 쓰면 검증할 수 없음. 숫자로 쓴다</dd></dl>
+        </article>
+        <article class="card">
+          <div class="card-top"><div><h3>사용자 요구사항 <span class="exam">기출</span></h3><div class="en">User Requirements</div></div><span class="year">고객 언어</span></div>
+          <p>사용자가 이해하는 말과 그림으로 쓴 요구입니다. 무엇을 원하는지를 넓게 담습니다.</p>
+          <dl class="kv"><dt>예</dt><dd>지난달 주문 내역을 다시 볼 수 있어야 한다.</dd><dt>읽는 사람</dt><dd>고객, 기획자, 관리자</dd></dl>
+        </article>
+        <article class="card">
+          <div class="card-top"><div><h3>시스템 요구사항 <span class="exam">기출</span></h3><div class="en">System Requirements</div></div><span class="year">개발 언어</span></div>
+          <p>사용자 요구를 개발자가 구현할 수 있게 자세히 풀어 쓴 요구입니다.</p>
+          <dl class="kv"><dt>예</dt><dd>주문 목록 API는 최근 12개월을 페이지당 20건으로 반환한다.</dd><dt>읽는 사람</dt><dd>개발자, 설계자, 테스터</dd></dl>
+        </article>
+        <article class="card">
+          <div class="card-top"><div><h3>품질 특성 8가지 <span class="exam">기출</span></h3><div class="en">ISO/IEC 25010</div></div><span class="year">비기능</span></div>
+          <p>비기능 요구를 빠짐없이 챙기는 체크리스트입니다. 예전 표준은 ISO/IEC 9126(6가지)입니다.</p>
+          <dl class="mini">
+            <div><dt>기능 적합성</dt><dd>필요한 기능이 정확히 있나</dd></div>
+            <div><dt>성능 효율성</dt><dd>응답 시간, 자원 사용</dd></div>
+            <div><dt>호환성</dt><dd>다른 시스템과 함께 동작</dd></div>
+            <div><dt>사용성</dt><dd>배우고 쓰기 쉬운가</dd></div>
+            <div><dt>신뢰성</dt><dd>장애 없이 버티는가</dd></div>
+            <div><dt>보안성</dt><dd>권한 없는 접근을 막나</dd></div>
+            <div><dt>유지보수성</dt><dd>고치고 바꾸기 쉬운가</dd></div>
+            <div><dt>이식성</dt><dd>다른 환경으로 옮기기 쉬운가</dd></div>
+          </dl>
+        </article>
+      </div>
+      <h3 class="sub-h">기능일까, 비기능일까 <small>헷갈리는 예시로 연습</small></h3>
+      <div class="table-wrap">
+        <table class="problem">
+          <thead><tr><th>요구 문장</th><th>종류</th><th>이유</th></tr></thead>
+          <tbody>
+            <tr><td>비밀번호를 잊으면 메일로 재설정할 수 있다</td><td>기능</td><td>시스템이 하는 동작</td></tr>
+            <tr><td>비밀번호는 암호화해서 저장한다</td><td>비기능</td><td>보안성 제약</td></tr>
+            <tr><td>관리자는 회원을 정지할 수 있다</td><td>기능</td><td>권한별 동작</td></tr>
+            <tr><td>서비스는 월 99.9% 이상 가동된다</td><td>비기능</td><td>신뢰성(가용성)</td></tr>
+            <tr><td>화면은 휴대폰에서도 보인다</td><td>비기능</td><td>이식성·사용성</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section class="block fam-struct" id="process">
+      <div class="family">
+        <div class="eyebrow">어떻게 · 순서</div>
+        <h2>요구사항 개발 단계 <span class="exam">기출</span></h2>
+        <p class="desc">도출 → 분석 → 명세 → 확인 순서로 진행하고, 확정된 뒤에는 변경 관리로 지킵니다. 앞 단계일수록 빠뜨리면 뒤에서 비용이 커집니다.</p>
+      </div>
+      <nav class="jump" aria-label="이 탭 안의 섹션">이 탭 안에서 <a href="#elicit">1 도출</a><a href="#analyze">2 분석</a><a href="#specify">3 명세</a><a href="#validate">4 확인</a></nav>
+
+      <h3 class="sub-h" id="elicit">1 도출 <small>Elicitation · 요구를 찾아낸다</small></h3>
+      <div class="cards">
+        <article class="card"><div class="card-top"><div><h3>인터뷰 <span class="exam">기출</span></h3><div class="en">Interview</div></div></div><p>이해관계자와 직접 묻고 답합니다. 가장 기본이고, 숨은 사정을 듣기 좋습니다.</p><dl class="kv"><dt>요령</dt><dd>열린 질문으로 시작, 끝에 요약해서 되묻기</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>브레인스토밍 <span class="exam">기출</span></h3><div class="en">Brainstorming</div></div></div><p>여럿이 비판 없이 아이디어를 쏟아낸 뒤 묶습니다. 새 서비스 기획에 좋습니다.</p><dl class="kv"><dt>요령</dt><dd>평가는 나중에, 양을 먼저</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>워크숍 (JAD) <span class="exam">기출</span></h3><div class="en">Joint Application Design</div></div></div><p>사용자와 개발자가 한자리에 모여 집중적으로 요구를 정합니다. 부서 간 충돌을 빨리 풉니다.</p><dl class="kv"><dt>요령</dt><dd>진행자 지정, 결정 사항은 그 자리에서 기록</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>관찰 <span class="exam">기출</span></h3><div class="en">Observation</div></div></div><p>사용자가 실제로 일하는 모습을 봅니다. 말로는 안 나오는 습관과 우회 방법을 찾습니다.</p><dl class="kv"><dt>요령</dt><dd>묻기 전에 먼저 보고, 나중에 이유를 묻기</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>설문 <span class="exam">기출</span></h3><div class="en">Questionnaire</div></div></div><p>많은 사람에게 같은 질문을 던져 경향을 봅니다. 깊이는 얕지만 범위가 넓습니다.</p><dl class="kv"><dt>요령</dt><dd>인터뷰로 가설을 세운 뒤 설문으로 확인</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>프로토타이핑 <span class="exam">기출</span></h3><div class="en">Prototyping</div></div></div><p>화면 시제품을 보여 주고 반응을 듣습니다. "보면 알 것 같다"는 요구에 가장 효과적입니다.</p><dl class="kv"><dt>요령</dt><dd>시제품이 무엇을 검증하는지 먼저 알리기</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>유스케이스 <span class="exam">기출</span></h3><div class="en">Use Case</div></div></div><p>사용자(액터)가 시스템으로 목표를 이루는 과정을 시나리오로 씁니다. UML 유스케이스 다이어그램으로 그립니다.</p><dl class="kv"><dt>요령</dt><dd>정상 흐름 다음에 예외 흐름을 꼭 쓰기</dd></dl></article>
+      </div>
+
+      <h3 class="sub-h" id="analyze">2 분석 <small>Analysis · 나누고 다듬는다</small></h3>
+      <div class="cards">
+        <article class="card"><div class="card-top"><div><h3>분류와 충돌 해결</h3><div class="en">Classification</div></div></div><p>모은 요구를 기능/비기능, 우선순위, 담당 영역으로 나누고, 서로 부딪치는 요구를 조율합니다.</p><dl class="kv"><dt>예</dt><dd>"모든 기록 보관" vs "개인정보 1년 후 삭제"</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>모델링 <span class="exam">기출</span></h3><div class="en">Modeling</div></div></div><p>요구를 그림으로 바꿔 빠진 곳을 찾습니다.</p><dl class="kv"><dt>도구</dt><dd>유스케이스, 활동 다이어그램, DFD, ERD</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>우선순위</h3><div class="en">MoSCoW · Kano</div></div></div><p>다 할 수 없으니 순서를 정합니다. MoSCoW는 꼭·되도록·가능하면·이번엔 안 함으로 나눕니다.</p><dl class="kv"><dt>요령</dt><dd>Must가 절반을 넘으면 우선순위가 아님</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>타당성 검토</h3><div class="en">Feasibility</div></div></div><p>기술, 비용, 일정, 법적으로 가능한지 따집니다. 안 되는 요구는 이 단계에서 걸러야 쌉니다.</p></article>
+      </div>
+
+      <h3 class="sub-h" id="specify">3 명세 <small>Specification · 문서로 약속한다</small></h3>
+      <div class="cards">
+        <article class="card"><div class="card-top"><div><h3>요구사항 명세서 (SRS) <span class="exam">기출</span></h3><div class="en">IEEE 830 · ISO/IEC/IEEE 29148</div></div></div><p>요구를 빠짐없이 정리한 공식 문서입니다. 개발, 테스트, 계약의 기준이 됩니다.</p><dl class="kv"><dt>목차 예</dt><dd>개요, 전체 설명, 기능 요구, 비기능 요구, 인터페이스</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>정형 명세 <span class="exam">기출</span></h3><div class="en">Formal Specification</div></div></div><p>수학 기호와 논리로 씁니다. 모호함이 없지만 읽고 쓰기 어렵습니다.</p><dl class="kv"><dt>예</dt><dd>Z, VDM, 페트리넷, 상태 기계</dd><dt>쓰는 곳</dt><dd>철도·항공 같은 안전 중심 시스템</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>비정형 명세 <span class="exam">기출</span></h3><div class="en">Informal Specification</div></div></div><p>자연어, 표, 다이어그램으로 씁니다. 누구나 읽지만 해석이 갈릴 수 있습니다.</p><dl class="kv"><dt>예</dt><dd>자연어 문서, 유스케이스, 유저 스토리</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>좋은 요구의 조건 <span class="exam">기출</span></h3><div class="en">Quality of Requirements</div></div></div>
+          <dl class="mini">
+            <div><dt>정확성</dt><dd>실제 필요를 담았나</dd></div>
+            <div><dt>명확성</dt><dd>해석이 하나뿐인가</dd></div>
+            <div><dt>완전성</dt><dd>빠진 경우가 없나</dd></div>
+            <div><dt>일관성</dt><dd>서로 부딪치지 않나</dd></div>
+            <div><dt>검증 가능성</dt><dd>테스트로 확인되나</dd></div>
+            <div><dt>추적 가능성</dt><dd>출처와 구현을 잇나</dd></div>
+          </dl>
+        </article>
+      </div>
+
+      <h3 class="sub-h" id="validate">4 확인과 관리 <small>Validation · 맞는지 검토하고 지킨다</small></h3>
+      <div class="cards">
+        <article class="card"><div class="card-top"><div><h3>동료 검토 <span class="exam">기출</span></h3><div class="en">Peer Review</div></div></div><p>작성자가 동료에게 명세를 설명하고 결함을 찾습니다. 가볍고 자주 할 수 있습니다.</p></article>
+        <article class="card"><div class="card-top"><div><h3>워크스루 <span class="exam">기출</span></h3><div class="en">Walk-through</div></div></div><p>검토 자료를 미리 나눠 주고 짧게 회의하며 훑어봅니다. 비공식이고 오류 발견이 목적입니다.</p></article>
+        <article class="card"><div class="card-top"><div><h3>인스펙션 <span class="exam">기출</span></h3><div class="en">Inspection</div></div></div><p>훈련된 검토자들이 역할(진행자, 기록자 등)을 나눠 체크리스트로 꼼꼼히 봅니다. 가장 공식적입니다.</p><dl class="kv"><dt>순서</dt><dd>계획 → 사전 교육 → 준비 → 회의 → 수정 → 후속 조치</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>추적 매트릭스 <span class="exam">기출</span></h3><div class="en">Requirements Traceability Matrix</div></div></div><p>요구 하나하나를 설계, 코드, 테스트와 표로 잇습니다. 빠진 구현과 영향 범위를 바로 찾습니다.</p></article>
+        <article class="card fam-agile"><div class="card-top"><div><h3>베이스라인과 변경 관리 <span class="exam">기출</span></h3><div class="en">Baseline · CCB</div></div></div><p>확정된 요구를 기준선으로 묶고, 바꿀 때는 변경 요청 → 영향 분석 → 승인(변경 통제 위원회) → 반영 순서를 따릅니다.</p></article>
+      </div>
+    </section>
+
+    <!-- PRACTICE -->
+    <section class="block fam-agile" id="practice">
+      <div class="family">
+        <div class="eyebrow">실무 · 애자일 팀</div>
+        <h2>실무 도구</h2>
+        <p class="desc">애자일 팀은 두꺼운 명세서 대신 짧은 스토리와 수락 기준으로 요구를 다룹니다. 단계는 같고 크기와 주기가 작아진 것입니다.</p>
+      </div>
+      <div class="cards">
+        <article class="card"><div class="card-top"><div><h3>유저 스토리</h3><div class="en">User Story</div></div></div><p>누가, 무엇을, 왜 원하는지 한 문장으로 씁니다.</p><dl class="kv"><dt>형식</dt><dd>[사용자]로서, [기능]을 원한다. [가치]를 얻기 위해.</dd><dt>예</dt><dd>구매자로서, 지난 주문을 다시 담고 싶다. 같은 물건을 빨리 사기 위해.</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>INVEST</h3><div class="en">좋은 스토리의 조건</div></div></div>
+          <dl class="mini">
+            <div><dt>Independent</dt><dd>다른 스토리와 독립</dd></div>
+            <div><dt>Negotiable</dt><dd>세부는 협의 가능</dd></div>
+            <div><dt>Valuable</dt><dd>사용자에게 가치</dd></div>
+            <div><dt>Estimable</dt><dd>크기를 추정 가능</dd></div>
+            <div><dt>Small</dt><dd>한 스프린트에 끝남</dd></div>
+            <div><dt>Testable</dt><dd>완료를 확인 가능</dd></div>
+          </dl>
+        </article>
+        <article class="card"><div class="card-top"><div><h3>수락 기준</h3><div class="en">Given-When-Then</div></div></div><p>스토리가 끝났다고 볼 조건을 시나리오로 씁니다. 그대로 자동 테스트가 되기도 합니다(BDD).</p><dl class="kv"><dt>예</dt><dd>주문 내역이 있을 때(Given) 다시 담기를 누르면(When) 같은 상품이 장바구니에 담긴다(Then).</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>스토리 맵</h3><div class="en">Story Mapping</div></div></div><p>사용자 활동을 가로로, 세부 스토리를 세로로 놓아 전체 흐름을 봅니다. 첫 출시 범위를 가로줄로 자릅니다.</p></article>
+        <article class="card"><div class="card-top"><div><h3>MoSCoW</h3><div class="en">우선순위 분류</div></div></div>
+          <dl class="mini">
+            <div><dt>Must</dt><dd>없으면 출시 불가</dd></div>
+            <div><dt>Should</dt><dd>중요하지만 대안 있음</dd></div>
+            <div><dt>Could</dt><dd>여유가 되면</dd></div>
+            <div><dt>Won't</dt><dd>이번에는 안 함</dd></div>
+          </dl>
+        </article>
+      </div>
+      <h3 class="sub-h">명세서와 백로그 <small>같은 요구, 다른 그릇</small></h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>구분</th><th>요구사항 명세서(SRS)</th><th>제품 백로그</th></tr></thead>
+          <tbody>
+            <tr><td class="name">작성 시점</td><td>개발 전에 한 번에</td><td>개발하면서 계속</td></tr>
+            <tr><td class="name">단위</td><td>번호 매긴 요구 문장</td><td>유저 스토리</td></tr>
+            <tr><td class="name">변경</td><td>공식 절차(CCB)로</td><td>매 스프린트 재정렬</td></tr>
+            <tr><td class="name">완료 기준</td><td>인수 테스트</td><td>수락 기준, 완료 정의(DoD)</td></tr>
+            <tr><td class="name">맞는 곳</td><td>계약·규제가 중요한 프로젝트</td><td>변화가 잦은 제품 개발</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- COMPARE -->
+    <section class="block" id="compare">
+      <div class="sec-head"><h2>도출 기법 비교</h2><p>막대 5칸 기준의 상대 평가입니다.</p></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>기법</th><th>깊이</th><th>범위(인원)</th><th>시간·비용</th><th>잘 찾는 것</th></tr></thead>
+          <tbody>
+            <tr><td class="name">인터뷰</td><td><span class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></td><td><span class="meter"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></td><td><span class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span></td><td>숨은 사정, 업무 규칙</td></tr>
+            <tr><td class="name">워크숍(JAD)</td><td><span class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></td><td><span class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span></td><td><span class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></td><td>부서 간 합의, 충돌 해결</td></tr>
+            <tr><td class="name">브레인스토밍</td><td><span class="meter"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></td><td><span class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span></td><td><span class="meter"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></td><td>새 아이디어</td></tr>
+            <tr><td class="name">관찰</td><td><span class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></td><td><span class="meter"><i class="on"></i><i></i><i></i><i></i><i></i></span></td><td><span class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></td><td>말로 안 나오는 습관</td></tr>
+            <tr><td class="name">설문</td><td><span class="meter"><i class="on"></i><i></i><i></i><i></i><i></i></span></td><td><span class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></td><td><span class="meter"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></td><td>많은 사람의 경향</td></tr>
+            <tr><td class="name">프로토타이핑</td><td><span class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></td><td><span class="meter"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></td><td><span class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></td><td>화면·흐름에 대한 반응</td></tr>
+            <tr><td class="name">유스케이스</td><td><span class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span></td><td><span class="meter"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></td><td><span class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span></td><td>목표별 흐름과 예외</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CHOOSER -->
+    <section class="block" id="chooser">
+      <div class="sec-head"><h2>선택 도우미</h2><p>지금 상황을 고르면 먼저 쓸 도출 기법을 추천합니다.</p></div>
+      <div class="chooser">
+        <form class="q-panel fam-struct" id="cform">
+          <fieldset><legend>지금 가장 큰 문제는?</legend><div class="seg" style="flex-direction:column;align-items:flex-start">
+            <input type="radio" name="need" id="n1" value="vague" checked><label for="n1">고객도 원하는 걸 잘 모른다</label>
+            <input type="radio" name="need" id="n2" value="many"><label for="n2">이해관계자가 많고 서로 의견이 다르다</label>
+            <input type="radio" name="need" id="n3" value="habit"><label for="n3">현장에서 실제로 어떻게 일하는지 모른다</label>
+            <input type="radio" name="need" id="n4" value="scale"><label for="n4">사용자가 수천 명이라 다 만날 수 없다</label>
+            <input type="radio" name="need" id="n5" value="new"><label for="n5">완전히 새로운 서비스를 기획한다</label>
+            <input type="radio" name="need" id="n6" value="rule"><label for="n6">업무 규칙이 복잡하고 예외가 많다</label>
+          </div></fieldset>
+        </form>
+        <div class="result" aria-live="polite">
+          <div class="eyebrow">먼저 쓸 기법</div>
+          <div class="combo"><span class="fam-struct" id="cPick">프로토타이핑</span></div>
+          <p class="note" id="cWhy"></p>
+          <div class="sub">함께 쓰면 좋은 기법</div>
+          <p class="note" id="cAlso"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- GLOSSARY -->
+    <section class="block" id="glossary">
+      <div class="sec-head"><h2>핵심 용어</h2><p>요구사항을 다룰 때 자주 나오는 말입니다.</p></div>
+      <dl class="gloss">
+        <div><dt>요구공학 <span class="exam">기출</span></dt><dd>요구를 찾고 정리하고 관리하는 일 전체</dd></div>
+        <div><dt>이해관계자</dt><dd>시스템에 영향을 주거나 받는 사람과 조직</dd></div>
+        <div><dt>SRS <span class="exam">기출</span></dt><dd>소프트웨어 요구사항 명세서</dd></div>
+        <div><dt>베이스라인 <span class="exam">기출</span></dt><dd>공식 승인된 요구의 기준 시점</dd></div>
+        <div><dt>CCB <span class="exam">기출</span></dt><dd>변경 통제 위원회. 변경 요청을 승인하는 곳</dd></div>
+        <div><dt>RTM <span class="exam">기출</span></dt><dd>요구사항 추적 매트릭스</dd></div>
+        <div><dt>검증(Verification) <span class="exam">기출</span></dt><dd>명세대로 올바르게 만들었나</dd></div>
+        <div><dt>확인(Validation) <span class="exam">기출</span></dt><dd>고객이 원한 올바른 것을 만들었나</dd></div>
+        <div><dt>액터</dt><dd>시스템과 상호작용하는 사람이나 외부 시스템</dd></div>
+        <div><dt>수락 기준</dt><dd>스토리가 완료됐다고 볼 조건</dd></div>
+        <div><dt>골드 플레이팅</dt><dd>요구에 없는 기능을 덧붙이는 낭비</dd></div>
+        <div><dt>범위 확산</dt><dd>통제 없이 요구가 계속 늘어나는 현상(Scope Creep)</dd></div>
+      </dl>
+    </section>
+
+    <!-- CERT -->
+    <section class="block" id="cert">
+      <div class="sec-head"><h2>자격증 대비 <span class="exam">기출</span></h2><p>정보처리기사 출제 범위에 드는 내용만 모았습니다.</p></div>
+      <h3 class="sub-h">출제 범위 한눈에</h3>
+      <div class="cert-list">
+        <section class="fam-trad"><h4><a href="#types">요구사항 종류</a></h4><ul><li>기능 / 비기능</li><li>사용자 / 시스템</li><li>ISO/IEC 25010 품질 특성</li></ul></section>
+        <section class="fam-struct"><h4><a href="#process">개발 단계</a></h4><ul><li>도출 → 분석 → 명세 → 확인</li><li>도출 기법 7가지</li><li>정형 / 비정형 명세</li></ul></section>
+        <section class="fam-agile"><h4><a href="#validate">확인과 관리</a></h4><ul><li>동료 검토</li><li>워크스루</li><li>인스펙션</li><li>추적 매트릭스</li><li>베이스라인·CCB</li></ul></section>
+      </div>
+      <h3 class="sub-h">헷갈리는 구분</h3>
+      <div class="table-wrap">
+        <table class="pairs">
+          <thead><tr><th>짝</th><th>앞의 것</th><th>뒤의 것</th></tr></thead>
+          <tbody>
+            <tr><td>기능 / 비기능</td><td>무엇을 하는가</td><td>얼마나 잘 하는가 (성능, 보안 등)</td></tr>
+            <tr><td>사용자 / 시스템 요구</td><td>고객 언어로 넓게</td><td>개발 언어로 자세히</td></tr>
+            <tr><td>검증 / 확인</td><td>Verification: 명세대로 올바르게 만들었나</td><td>Validation: 고객이 원한 것을 만들었나</td></tr>
+            <tr><td>워크스루 / 인스펙션</td><td>비공식, 짧은 회의로 훑어봄</td><td>공식, 역할과 체크리스트로 꼼꼼히</td></tr>
+            <tr><td>정형 / 비정형 명세</td><td>수학·논리 기호, 모호함 없음</td><td>자연어·그림, 읽기 쉬움</td></tr>
+            <tr><td>ISO 9126 / ISO 25010</td><td>예전 표준, 품질 특성 6가지</td><td>현재 표준, 품질 특성 8가지 (보안성·호환성 추가)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 class="sub-h">분류 정리표</h3>
+      <div class="memo">
+        <div><b>개발 단계<small>4</small></b><p>도출 → 분석 → 명세 → 확인 (+ 변경 관리)</p></div>
+        <div><b>도출 기법<small>7</small></b><p>인터뷰, 브레인스토밍, 워크숍(JAD), 관찰, 설문, 프로토타이핑, 유스케이스</p></div>
+        <div><b>ISO/IEC 25010<small>8</small></b><p>기능 적합성, 성능 효율성, 호환성, 사용성, 신뢰성, 보안성, 유지보수성, 이식성</p></div>
+        <div><b>정형 명세 언어</b><p>Z, VDM, 페트리넷, 상태 기계</p></div>
+        <div><b>검토 방법</b><p>동료 검토, 워크스루, 인스펙션</p></div>
+        <div><b>인스펙션 순서</b><p>계획 → 사전 교육 → 준비 → 회의 → 수정 → 후속 조치</p></div>
+      </div>
+      <h3 class="sub-h">셀프 퀴즈 <small>한 번에 10문제</small></h3>
+      <div class="quiz" id="quiz" aria-live="polite"></div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">표준 번호는 2026년 기준입니다. 실무에서는 조직마다 단계 이름과 문서 양식이 조금씩 다릅니다.</div>
+</footer>
+
+<script>
+window.PAGE={
+  order:['home','overview','types','process','practice','chooser','cert'],
+  names:{home:'홈',overview:'한눈에 보기',types:'요구사항 종류',process:'개발 단계',practice:'실무 도구',chooser:'비교·선택',cert:'자격증 대비'},
+  panels:{home:['hero','axes'],overview:['overview','glossary'],types:['types'],process:['process'],practice:['practice'],chooser:['compare','chooser'],cert:['cert']},
+  alias:{glossary:'overview',compare:'chooser',axes:'home',elicit:'process',analyze:'process',specify:'process',validate:'process'},
+  chooser:{
+    vague:['프로토타이핑','보면 알 것 같은 요구는 시제품으로 끌어내는 게 가장 빠릅니다.','인터뷰로 목적을 듣고, 유스케이스로 흐름을 정리하세요.'],
+    many:['워크숍 (JAD)','한자리에 모여 바로 합의하면 부서 간 충돌을 빨리 풀 수 있습니다.','사전 인터뷰로 쟁점을 모아 두고, 결과는 SRS나 백로그에 바로 기록하세요.'],
+    habit:['관찰','말로 설명하지 못하는 습관과 우회 방법은 직접 봐야 보입니다.','관찰 뒤 인터뷰로 이유를 묻고, 활동 다이어그램으로 정리하세요.'],
+    scale:['설문','많은 사람의 경향은 설문으로 넓게 확인합니다.','먼저 인터뷰 몇 건으로 질문을 다듬고, 결과는 우선순위에 반영하세요.'],
+    'new':['브레인스토밍','아직 정답이 없을 때는 양을 먼저 늘려야 좋은 아이디어가 나옵니다.','나온 아이디어는 스토리 맵으로 묶고 프로토타입으로 검증하세요.'],
+    rule:['유스케이스','목표별 정상 흐름과 예외 흐름을 나눠 쓰면 빠진 규칙이 드러납니다.','업무 담당자 인터뷰와 함께 쓰고, 추적 매트릭스로 테스트와 연결하세요.']
+  },
+  quiz:{key:'req',
+    groups:{
+      kind:[['시스템이 무엇을 하는가를 정의한 요구','기능 요구사항'],['성능·보안처럼 얼마나 잘 하는가를 정의한 요구','비기능 요구사항'],['고객이 이해하는 말로 넓게 쓴 요구','사용자 요구사항'],['개발자가 구현할 수 있게 자세히 쓴 요구','시스템 요구사항']],
+      step:[['이해관계자에게서 요구를 찾아내는 단계','도출'],['요구를 분류하고 충돌을 풀고 우선순위를 정하는 단계','분석'],['요구를 검증할 수 있는 문서로 기록하는 단계','명세'],['명세가 고객이 원한 것과 맞는지 검토하는 단계','확인']],
+      tech:[['사용자가 일하는 모습을 직접 보며 요구를 찾는다','관찰'],['사용자와 개발자가 모여 집중적으로 요구를 정한다','워크숍 (JAD)'],['많은 사람에게 같은 질문으로 경향을 본다','설문'],['비판 없이 아이디어를 쏟아낸 뒤 묶는다','브레인스토밍'],['화면 시제품을 보여 주고 반응을 듣는다','프로토타이핑'],['액터가 목표를 이루는 과정을 시나리오로 쓴다','유스케이스']],
+      review:[['자료를 미리 나눠 주고 짧은 회의로 훑어보는 비공식 검토','워크스루'],['역할과 체크리스트로 진행하는 가장 공식적인 검토','인스펙션'],['요구를 설계·코드·테스트와 표로 잇는 도구','추적 매트릭스'],['공식 승인된 요구의 기준 시점','베이스라인'],['수학·논리 기호로 모호함 없이 쓰는 명세','정형 명세']],
+      quality:[['응답 시간과 자원 사용','성능 효율성'],['권한 없는 접근을 막는 정도','보안성'],['장애 없이 버티는 정도','신뢰성'],['배우고 쓰기 쉬운 정도','사용성'],['다른 환경으로 옮기기 쉬운 정도','이식성'],['고치고 바꾸기 쉬운 정도','유지보수성']]
+    },
+    kinds:{kind:'요구사항 종류',step:'개발 단계',tech:'도출 기법',review:'확인과 관리',quality:'품질 특성'},
+    areas:{all:['전체',['kind','step','tech','review','quality']],basic:['종류·단계',['kind','step']],tech:['기법·검토',['tech','review']],quality:['품질 특성',['quality']]}
+  }
+};
+</script>
+
+<script>
+// 가이드 공통 스크립트: 탭 전환, 기출 표시 토글, 셀프 퀴즈, 선택 도우미
+// 페이지마다 window.PAGE = {order, names, panels, alias, quiz:{groups, kinds, areas}, chooser:{answers}} 를 먼저 정의한다.
+(function(){
+  var C=window.PAGE;
+  function $id(i){return document.getElementById(i);}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+  // ---- 기출 표시 토글 ----
+  var et=$id('examToggle');
+  if(et){
+    try{if(localStorage.getItem('hideExam')==='1'){et.checked=false;document.body.classList.add('hide-exam');}}catch(e){}
+    et.addEventListener('change',function(){document.body.classList.toggle('hide-exam',!et.checked);try{localStorage.setItem('hideExam',et.checked?'0':'1');}catch(e){}});
+  }
+
+  // ---- 선택 도우미: 라디오 값 → 결과 ----
+  var cf=$id('cform');
+  if(cf&&C.chooser){
+    var calcC=function(){
+      var el=cf.querySelector('input[name="need"]:checked');var r=C.chooser[el?el.value:Object.keys(C.chooser)[0]];
+      $id('cPick').textContent=r[0];$id('cWhy').textContent=r[1];$id('cAlso').textContent=r[2];
+    };
+    cf.addEventListener('change',calcC);cf.addEventListener('submit',function(e){e.preventDefault();});calcC();
+  }
+
+  // ---- 셀프 퀴즈 ----
+  var quiz=$id('quiz');
+  if(quiz&&C.quiz){
+    var QG=C.quiz.groups,KIND=C.quiz.kinds,AREAS=C.quiz.areas,area='all',qs=[],qi=0,score=0,wrong=[],answered=false,KEY=(C.quiz.key||'q');
+    var shuffle=function(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;};
+    var buildPool=function(){
+      var pool=[];
+      AREAS[area][1].forEach(function(g){
+        var items=QG[g],names=items.map(function(x){return x[1];});
+        items.forEach(function(it){
+          var others=shuffle(names.filter(function(n){return n!==it[1];})).slice(0,3);
+          pool.push({kind:KIND[g],q:it[0],a:it[1],choices:shuffle(others.concat([it[1]]))});
+        });
+      });
+      return pool;
+    };
+    var best=function(){try{return localStorage.getItem(KEY+'-best-'+area);}catch(e){return null;}};
+    var saveBest=function(s){try{var b=+best()||0;if(s>b)localStorage.setItem(KEY+'-best-'+area,String(s));}catch(e){}};
+    var areaBar=function(){return '<div class="quiz-top"><div class="quiz-areas" role="group" aria-label="출제 영역">'+Object.keys(AREAS).map(function(k){return '<button type="button" data-area="'+k+'" aria-pressed="'+(k===area)+'">'+AREAS[k][0]+'</button>';}).join('')+'</div><span class="qprog">'+(best()!==null?'최고 기록 '+best()+' / '+qs.length:'아직 기록 없음')+'</span></div>';};
+    var start=function(list){qs=list;qi=0;score=0;wrong=[];renderQ();};
+    var newRound=function(){start(shuffle(buildPool()).slice(0,10));};
+    var renderQ=function(){
+      answered=false;var q=qs[qi];
+      quiz.innerHTML=areaBar()+'<div class="qbar"><span style="width:'+(qi/qs.length*100)+'%"></span></div><div class="qprog">'+(qi+1)+' / '+qs.length+' · 맞힌 수 '+score+'</div><div class="qkind">'+esc(q.kind)+'</div><div class="qtext">'+esc(q.q)+'</div><div class="qchoices">'+q.choices.map(function(c){return '<button type="button" data-c="'+esc(c)+'">'+esc(c)+'</button>';}).join('')+'</div><div class="qfeed" id="qfeed"></div><div class="qactions"><button type="button" class="qbtn primary" id="qnext" hidden>'+(qi===qs.length-1?'결과 보기':'다음 문제')+'</button></div>';
+    };
+    var renderEnd=function(){
+      saveBest(score);
+      quiz.innerHTML=areaBar()+'<div class="qbar"><span style="width:100%"></span></div><div><div class="qprog">결과</div><div class="qscore">'+score+' / '+qs.length+'</div></div>'+(wrong.length?'<div class="sub">틀린 문제</div><ul class="qwrong">'+wrong.map(function(w){return '<li>'+esc(w.q)+' → <b>'+esc(w.a)+'</b></li>';}).join('')+'</ul>':'<p class="note">모두 맞혔습니다.</p>')+'<div class="qactions">'+(wrong.length?'<button type="button" class="qbtn primary" id="qretry">틀린 문제 다시 풀기</button>':'')+'<button type="button" class="qbtn'+(wrong.length?'':' primary')+'" id="qnew">새 문제 10개</button></div>';
+    };
+    quiz.addEventListener('click',function(e){
+      var b=e.target.closest('button');if(!b)return;
+      if(b.hasAttribute('data-area')){area=b.getAttribute('data-area');newRound();return;}
+      if(b.id==='qnew'){newRound();return;}
+      if(b.id==='qretry'){start(shuffle(wrong).map(function(w){return {kind:w.kind,q:w.q,a:w.a,choices:shuffle(w.choices)};}));return;}
+      if(b.id==='qnext'){qi++;if(qi<qs.length)renderQ();else renderEnd();return;}
+      if(b.hasAttribute('data-c')&&!answered){
+        answered=true;var q=qs[qi],ok=b.getAttribute('data-c')===q.a;
+        quiz.querySelectorAll('.qchoices button').forEach(function(x){x.disabled=true;if(x.getAttribute('data-c')===q.a)x.classList.add('right');});
+        var fb=$id('qfeed');
+        if(ok){score++;fb.className='qfeed ok';fb.textContent='정답입니다.';}
+        else{b.classList.add('wrong');wrong.push(q);fb.className='qfeed no';fb.textContent='오답입니다. 정답은 '+q.a+'입니다.';}
+        var nx=$id('qnext');nx.hidden=false;nx.focus();
+      }
+    });
+    newRound();
+  }
+
+  // ---- 탭 (클릭으로 직접 전환, 가능한 곳에서만 주소 # 갱신) ----
+  var order=C.order,names=C.names,alias=C.alias||{},panels={};
+  Object.keys(C.panels).forEach(function(k){panels[k]=C.panels[k].map(function(id){return id==='hero'?document.querySelector('.hero-band'):$id(id);}).filter(Boolean);});
+  var tabs=document.querySelectorAll('nav.links [data-tab]'),cur=order[0];
+  var container=$id(C.pagerAfter||'top');
+  var pager=document.createElement('nav');pager.className='tab-pager';pager.setAttribute('aria-label','이전·다음 탭');
+  document.querySelector('main > .wrap').appendChild(pager);
+  function resolve(k){return panels[k]?k:(alias[k]||order[0]);}
+  function jumpTo(k){if(alias[k]){var el=$id(k);if(el)el.scrollIntoView({block:'start'});}}
+  function show(key,scroll){
+    key=resolve(key);cur=key;
+    order.forEach(function(k){panels[k].forEach(function(el){el.hidden=(k!==key);});});
+    tabs.forEach(function(t){var on=t.getAttribute('data-tab')===key;t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;});
+    var i=order.indexOf(key),h='';
+    if(i>0)h+='<a class="prev" href="#'+order[i-1]+'"><small>← 이전</small>'+names[order[i-1]]+'</a>';
+    if(i<order.length-1)h+='<a class="next" href="#'+order[i+1]+'"><small>다음 →</small>'+names[order[i+1]]+'</a>';
+    pager.innerHTML=h;
+    if(scroll)window.scrollTo({top:0,behavior:'instant'});
+  }
+  function current(){var h='';try{h=location.hash;}catch(e){}return (h||'#'+order[0]).slice(1);}
+  function go(key){
+    if(!panels[key]&&!alias[key])return;
+    var tab=resolve(key);
+    if(tab!==cur||!alias[key])show(tab,true);
+    jumpTo(key);
+    try{if(location.protocol!=='data:'&&location.hash!=='#'+tab)location.hash=tab;}catch(e){}
+  }
+  document.addEventListener('click',function(e){
+    var a=e.target.closest?e.target.closest('a[href^="#"]'):null;if(!a)return;
+    var key=a.getAttribute('href').slice(1);
+    if(panels[key]||alias[key]){e.preventDefault();go(key);}
+  });
+  window.addEventListener('hashchange',function(){var k=current(),t=resolve(k);if(t!==cur){show(t,true);jumpTo(k);}});
+  document.querySelector('nav.links').addEventListener('keydown',function(e){
+    if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;
+    var i=order.indexOf(cur);i=(i+(e.key==='ArrowRight'?1:-1)+order.length)%order.length;
+    go(order[i]);tabs[i].focus();e.preventDefault();
+  });
+  show(current(),false);jumpTo(current());
+})();
+</script>
+</body>
+</html>

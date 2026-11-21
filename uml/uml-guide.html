@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>UML 가이드</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f5f7f8; --surface:#ffffff; --ink:#15212b; --muted:#5a6a76; --line:#d7dfe4; --grid:#e8eef1;
+  --accent:#0e6e78; --accent-soft:#dff0f1;
+  --f-trad:#7a5a14; --f-trad-bg:#f6eedb;
+  --f-struct:#4b4f9e; --f-struct-bg:#e7e8f7;
+  --f-agile:#0e6e78; --f-agile-bg:#dff0f1;
+  --f-modern:#9c3d5a; --f-modern-bg:#f7e3ea;
+  --f-pattern:#3f6b2a; --f-pattern-bg:#e5f0dc;
+  --good:#2f7d3a; --good-bg:#e3f2e4; --bad:#b3372f; --bad-bg:#f8e3e1;
+  --font-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --s-1:.8125rem; --s0:1rem; --s1:1.25rem; --s2:1.625rem; --s3:2.25rem;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f161b; --surface:#16212a; --ink:#e3eaee; --muted:#93a4af; --line:#2a3842; --grid:#1b2831;
+  --accent:#5cc3cc; --accent-soft:#163a3f;
+  --f-trad:#e0b65c; --f-trad-bg:#33290f; --f-struct:#a4a8f0; --f-struct-bg:#24264a;
+  --f-agile:#5cc3cc; --f-agile-bg:#163a3f; --f-modern:#ec8eab; --f-modern-bg:#3e1c28; --f-pattern:#9fd17f; --f-pattern-bg:#1f3317; --good:#7fd08a; --good-bg:#18331c; --bad:#f08a80; --bad-bg:#3d1b18;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f161b; --surface:#16212a; --ink:#e3eaee; --muted:#93a4af; --line:#2a3842; --grid:#1b2831;
+  --accent:#5cc3cc; --accent-soft:#163a3f;
+  --f-trad:#e0b65c; --f-trad-bg:#33290f; --f-struct:#a4a8f0; --f-struct-bg:#24264a;
+  --f-agile:#5cc3cc; --f-agile-bg:#163a3f; --f-modern:#ec8eab; --f-modern-bg:#3e1c28; --f-pattern:#9fd17f; --f-pattern-bg:#1f3317; --good:#7fd08a; --good-bg:#18331c; --bad:#f08a80; --bad-bg:#3d1b18;
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:var(--s0);line-height:1.7;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:32px 32px;}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{text-wrap:balance;line-height:1.3;margin:0}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.eyebrow{font-family:var(--font-mono);font-size:var(--s-1);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* header + tabs */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;gap:20px;padding-block:12px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:1.05rem;display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none}
+.brand-mark{width:22px;height:22px;border:2px solid var(--accent);border-radius:4px;position:relative}
+.brand-mark::after{content:"";position:absolute;inset:4px 4px auto auto;width:8px;height:8px;background:var(--accent)}
+nav.links{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+nav.links a{color:var(--muted);text-decoration:none;font-size:.9rem;padding:4px 10px;border-radius:6px;display:inline-flex;align-items:center;gap:6px}
+nav.links a:hover{color:var(--ink);background:var(--grid)}
+nav.links a[aria-selected="true"]{color:var(--ink);font-weight:600;background:var(--accent-soft);box-shadow:inset 0 -2px 0 var(--accent)}
+nav.links .sep{width:1px;background:var(--line);margin:4px 4px}
+nav.links a .dot{width:8px;height:8px}
+.tab-pager{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:8px 32px}
+.tab-pager a{display:inline-flex;flex-direction:column;gap:2px;text-decoration:none;color:var(--ink);border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 16px;min-width:160px}
+.tab-pager a:hover{border-color:var(--accent)}
+.tab-pager a small{font-family:var(--font-mono);font-size:var(--s-1);color:var(--muted)}
+.tab-pager a.next{margin-left:auto;text-align:right}
+
+/* hero */
+.hero-band{background:var(--surface);border-bottom:1px solid var(--line);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px}
+.hero{padding-block:72px 40px;display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center}
+.hero > *{min-width:0}
+.hero h1{font-size:clamp(2.6rem,6vw,4.4rem);font-weight:700;letter-spacing:-.03em;line-height:1.08;margin-top:14px}
+.hero h1 .hl{color:var(--accent);position:relative}
+.hero h1 .hl::after{content:"";position:absolute;left:0;right:0;bottom:.06em;height:.12em;background:var(--accent);opacity:.25;border-radius:2px}
+.hero p.lead{margin-top:20px;color:var(--muted);max-width:52ch;font-size:1.1rem}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.btn{display:inline-flex;align-items:center;padding:11px 20px;border-radius:8px;font-weight:600;text-decoration:none;font-size:.98rem;border:1.5px solid var(--accent)}
+.btn.primary{background:var(--accent);color:var(--surface)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{color:var(--accent);background:transparent}
+.btn.ghost:hover{background:var(--accent-soft)}
+.stats{display:flex;gap:36px;margin:36px 0 0;flex-wrap:wrap}
+.stats div{display:grid;gap:2px}
+.stats dt{font-family:var(--font-mono);font-size:var(--s-1);letter-spacing:.04em;color:var(--muted)}
+.stats dd{margin:0;font-size:2rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
+.hero-art svg{display:block;width:100%;height:auto;max-width:480px;margin-left:auto}
+.hero-art text{font-family:var(--font-body)}
+.spin{transform-origin:0 0;animation:spin 14s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.spin{animation:none}}
+.fam-strip{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--line);border-radius:10px;background:var(--bg);margin-bottom:32px;overflow:hidden}
+.fam-strip a{display:flex;align-items:center;gap:10px;padding:14px 18px;text-decoration:none;color:var(--ink);border-right:1px solid var(--line);font-size:.95rem}
+.fam-strip a:last-child{border-right:none}
+.fam-strip a:hover{background:var(--grid)}
+.fam-strip b{margin-left:auto;font-family:var(--font-mono);font-weight:500;color:var(--muted);font-size:var(--s-1)}
+.dot{width:12px;height:12px;border-radius:3px;flex:none;display:inline-block}
+.d-trad{background:var(--f-trad)}.d-struct{background:var(--f-struct)}.d-agile{background:var(--f-agile)}.d-modern{background:var(--f-modern)}.d-pattern{background:var(--f-pattern)}
+
+/* sections */
+section.block{padding-block:40px}
+.sec-head{display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;margin-bottom:20px;border-bottom:2px solid var(--ink);padding-bottom:10px}
+.sec-head h2{font-size:var(--s2)}
+.sec-head p{color:var(--muted);font-size:.95rem}
+
+/* two axes */
+.axes{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.axis{background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--fam);border-radius:10px;padding:20px;display:grid;gap:10px;align-content:start;min-width:0}
+.axis .eyebrow{color:var(--fam)}
+.axis h3{font-size:var(--s1)}
+.axis .q{font-size:1.05rem;font-weight:600}
+.axis .q em{font-style:normal;color:var(--fam)}
+.axis .chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:.85rem;padding:2px 10px;border-radius:999px;background:var(--fam-bg);color:var(--fam);text-decoration:none;font-weight:500}
+.axis .analogy{font-size:.9rem;color:var(--muted)}
+.combine{margin-top:20px}
+.combine h3{font-size:var(--s1);margin-bottom:10px}
+.callouts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.callout{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:16px 18px;font-size:.93rem;display:grid;gap:6px;min-width:0}
+.callout b{font-size:.98rem}
+.callout .ans{font-family:var(--font-mono);font-size:.85rem;color:var(--muted)}
+.exam{display:inline-block;vertical-align:.2em;margin-left:6px;font-family:var(--font-mono);font-size:.68rem;font-weight:600;letter-spacing:.04em;line-height:1.5;padding:0 6px;border-radius:4px;border:1px solid var(--muted);color:var(--muted);white-space:nowrap}
+.exam-toggle{display:inline-flex;align-items:center;gap:8px;font-size:.9rem;cursor:pointer}
+body.hide-exam .exam{display:none}
+
+/* timeline */
+.timeline{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 8px 8px}
+.timeline svg{display:block;min-width:820px;width:100%;height:auto}
+.timeline text{font-family:var(--font-body)}
+.tl-legend{display:flex;gap:18px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);padding:6px 12px 4px}
+.tl-legend span{display:inline-flex;align-items:center;gap:6px}
+.tl-legend .dot{width:10px;height:10px;border-radius:50%}
+
+/* family band */
+.family{border-left:6px solid var(--fam);padding-left:20px;margin-bottom:16px}
+.family .eyebrow{color:var(--fam)}
+.family h2{font-size:var(--s2);margin-top:4px}
+.family p.desc{color:var(--muted);margin-top:6px;max-width:70ch}
+.fam-trad{--fam:var(--f-trad);--fam-bg:var(--f-trad-bg)}
+.fam-struct{--fam:var(--f-struct);--fam-bg:var(--f-struct-bg)}
+.fam-agile{--fam:var(--f-agile);--fam-bg:var(--f-agile-bg)}
+.fam-modern{--fam:var(--f-modern);--fam-bg:var(--f-modern-bg)}
+.fam-pattern{--fam:var(--f-pattern);--fam-bg:var(--f-pattern-bg)}
+
+/* design patterns */
+.sub-h{font-size:var(--s1);margin:40px 0 12px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.sub-h small{font-size:.9rem;font-weight:400;color:var(--muted)}
+.layers{display:grid;gap:8px;margin-top:20px}
+.layer{display:grid;grid-template-columns:150px 1fr auto;gap:16px;align-items:center;background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--lc);border-radius:8px;padding:12px 16px;min-width:0}
+.layer:nth-child(2){margin-left:4%}.layer:nth-child(3){margin-left:8%}.layer:nth-child(4){margin-left:12%;border-width:2px 2px 2px 5px;border-color:var(--fam)}
+.layer b{font-size:.98rem}
+.layer span{color:var(--muted);font-size:.92rem}
+.layer i{font-style:normal;font-size:.85rem;color:var(--muted);text-align:right}
+.l-a{--lc:var(--f-trad)}.l-b{--lc:var(--f-struct)}.l-c{--lc:var(--muted)}.l-d{--lc:var(--f-pattern)}
+.pbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.pbar button{font:inherit;font-size:.9rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 14px;cursor:pointer}
+.pbar button b{font-family:var(--font-mono);font-weight:500;color:var(--muted);margin-left:4px;font-size:.8rem}
+.pbar button[aria-pressed="true"]{background:var(--fam);border-color:var(--fam);color:var(--surface)}
+.pbar button[aria-pressed="true"] b{color:var(--surface)}
+.pbar input{font:inherit;font-size:.92rem;margin-left:auto;min-width:0;width:260px;max-width:100%;padding:6px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.pcard .ptop{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.pcard h4{margin:0;font-size:1.05rem}
+.pcard .en{font-family:var(--font-mono);font-size:var(--s-1);color:var(--muted)}
+.pcat{font-size:.75rem;padding:1px 8px;border-radius:999px;background:var(--fam-bg);color:var(--fam);font-weight:600;white-space:nowrap}
+.pcard p{font-size:.92rem}
+.pcard .kv{font-size:.86rem}
+.pcard .warn{font-size:.84rem;color:var(--f-modern)}
+.pempty{color:var(--muted);padding:20px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.problem td:nth-child(2){font-weight:600;white-space:nowrap;color:var(--fam)}
+.solid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.solid div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:4px;align-content:start;min-width:0}
+.solid .L{font-family:var(--font-mono);font-size:1.8rem;font-weight:500;color:var(--fam);line-height:1}
+.solid b{font-size:.95rem}
+.solid span{font-size:.86rem;color:var(--muted)}
+@media (max-width:980px){.solid{grid-template-columns:repeat(2,1fr)}}
+
+html{scroll-padding-top:84px}
+.jump{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:.88rem;color:var(--muted);margin:4px 0 8px}
+.jump a{text-decoration:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:2px 12px;color:var(--ink)}
+.jump a:hover{border-color:var(--accent);color:var(--accent)}
+
+/* overview flow diagram */
+.flow{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 8px 6px;overflow-x:auto;margin-bottom:8px}
+.flow svg{display:block;width:100%;min-width:760px;height:auto}
+.flow text{font-family:var(--font-body)}
+.flow a{cursor:pointer}
+.flow a:hover rect{stroke-width:2.5}
+.flow a:focus-visible rect{stroke-width:3}
+.flow-note{font-size:.9rem;color:var(--muted);margin:0 0 20px}
+.ov li b svg{width:16px;height:16px;vertical-align:-3px;margin-right:5px;fill:none;stroke:var(--fam);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* overview tab */
+.ov-axes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.ov-axes div{border-left:4px solid var(--fam);background:var(--surface);border-radius:6px;padding:10px 14px;min-width:0}
+.ov-axes b{display:block;font-size:.95rem}
+.ov-axes span{font-size:.88rem;color:var(--muted)}
+.ov{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;align-items:start}
+.ov section{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--fam);border-radius:10px;padding:14px 16px;min-width:0}
+.ov h3{font-size:1rem;margin:0 0 8px;display:flex;align-items:baseline;gap:6px}
+.ov h3 a{color:var(--ink);text-decoration:none}
+.ov h3 a:hover{color:var(--accent)}
+.ov h3 small{font-family:var(--font-mono);font-weight:500;font-size:var(--s-1);color:var(--muted)}
+.ov ul{list-style:none;margin:0;padding:0;display:grid}
+.ov li{display:grid;grid-template-columns:96px 1fr;gap:10px;padding:5px 0;border-top:1px solid var(--grid);font-size:.88rem}
+.ov li:first-child{border-top:none}
+.ov li b{font-weight:600}
+.ov li span{color:var(--muted)}
+.ov h4{font-size:.8rem;margin:10px 0 2px;color:var(--fam);font-family:var(--font-mono);letter-spacing:.04em}
+@media (max-width:700px){.ov-axes{grid-template-columns:1fr}}
+
+/* cert tab */
+.cert-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.cert-list section{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--fam);border-radius:10px;padding:14px 16px;display:grid;gap:8px;align-content:start;min-width:0}
+.cert-list h4{margin:0;font-size:1rem}
+.cert-list h4 a{color:var(--ink);text-decoration:none}
+.cert-list h4 a:hover{color:var(--accent)}
+.cert-list ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.cert-list li{font-size:.84rem;padding:1px 9px;border-radius:999px;background:var(--fam-bg);color:var(--fam)}
+.memo{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.memo div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:6px;align-content:start;min-width:0}
+.memo b{font-size:.98rem}
+.memo b small{font-family:var(--font-mono);font-weight:500;color:var(--muted);margin-left:6px}
+.memo ol,.memo ul{margin:0;padding-left:1.2em;font-size:.9rem}
+.memo p{font-size:.9rem;color:var(--muted)}
+.pairs td:first-child{font-weight:600;white-space:nowrap}
+.quiz{background:var(--surface);border:2px solid var(--accent);border-radius:12px;padding:20px;display:grid;gap:16px}
+.quiz-top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.quiz-areas{display:flex;flex-wrap:wrap;gap:6px}
+.quiz-areas button,.qbtn{font:inherit;font-size:.9rem;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer}
+.quiz-areas button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
+.qbtn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface);font-weight:600}
+.qprog{font-family:var(--font-mono);font-size:var(--s-1);color:var(--muted);font-variant-numeric:tabular-nums}
+.qbar{height:6px;background:var(--grid);border-radius:999px;overflow:hidden}
+.qbar span{display:block;height:100%;background:var(--accent)}
+.qtext{font-size:1.1rem;font-weight:600}
+.qkind{font-family:var(--font-mono);font-size:var(--s-1);color:var(--muted);letter-spacing:.04em}
+.qchoices{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.qchoices button{font:inherit;text-align:left;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:10px 14px;cursor:pointer}
+.qchoices button:hover:not(:disabled){border-color:var(--accent)}
+.qchoices button:disabled{cursor:default}
+.qchoices button.right{border-color:var(--good);background:var(--good-bg);font-weight:600}
+.qchoices button.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.qfeed{font-size:.92rem;min-height:1.5em}
+.qfeed.ok{color:var(--good)}.qfeed.no{color:var(--bad)}
+.qactions{display:flex;flex-wrap:wrap;gap:8px}
+.qscore{font-size:2rem;font-weight:700;font-variant-numeric:tabular-nums}
+.qwrong{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.qwrong li{border-left:3px solid var(--bad);padding:4px 12px;font-size:.92rem}
+.qwrong li b{color:var(--good)}
+@media (max-width:560px){.qchoices{grid-template-columns:1fr}}
+@media (max-width:640px){.layer{grid-template-columns:1fr;gap:2px}.layer i{text-align:left}.layer:nth-child(n){margin-left:0}.pbar input{margin-left:0;width:100%}.solid{grid-template-columns:1fr}}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-top:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.card h3{font-size:var(--s1)}
+.card .en{font-family:var(--font-mono);font-size:var(--s-1);color:var(--muted)}
+.year{font-family:var(--font-mono);font-size:var(--s-1);background:var(--fam-bg);color:var(--fam);padding:2px 8px;border-radius:4px;white-space:nowrap}
+.card p{font-size:.95rem}
+.card .more{font-size:.9rem;font-weight:600;text-decoration:none;margin-top:auto}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:.9rem;margin:0}
+.kv dt{color:var(--muted);font-weight:500}
+.kv dd{margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:.8rem;border:1px solid var(--line);padding:1px 8px;border-radius:999px;color:var(--muted)}
+.fig{background:var(--bg);border-radius:8px;padding:10px;overflow-x:auto}
+.fig svg{display:block;width:100%;height:auto;max-width:100%}
+.fig text{font-family:var(--font-body)}
+.mini{display:grid;gap:8px;font-size:.9rem;margin:0}
+.mini div{display:grid;grid-template-columns:90px 1fr;gap:10px}
+.mini dt{font-weight:600}
+.mini dd{margin:0;color:var(--muted)}
+
+/* manifesto */
+.manifesto{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:20px}
+.m-item{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:grid;gap:4px;min-width:0}
+.m-item b{color:var(--f-agile);font-size:1.05rem}
+.m-item span{color:var(--muted);font-size:.9rem}
+
+/* tables */
+.table-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:.92rem}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+thead th{font-weight:600;background:var(--grid)}
+tbody tr:last-child td{border-bottom:none}
+td.name{font-weight:600;white-space:nowrap}
+td.name .dot{margin-right:8px;vertical-align:-1px}
+.matrix th[scope="row"]{white-space:nowrap;color:var(--f-struct)}
+.matrix thead th:not(:first-child){color:var(--f-trad)}
+.matrix td.hit{background:var(--accent-soft);font-weight:600}
+.matrix td.no{color:var(--muted)}
+.axis-pill{font-size:.78rem;padding:1px 8px;border-radius:999px;white-space:nowrap;background:var(--fam-bg);color:var(--fam);font-weight:600}
+.meter{display:inline-flex;gap:3px;vertical-align:middle}
+.meter i{width:10px;height:10px;border-radius:2px;background:var(--line)}
+.meter i.on{background:var(--accent)}
+
+/* chooser */
+.chooser{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.chooser > *{min-width:0}
+.q-panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;gap:18px}
+.q-group{display:grid;gap:14px}
+.q-group > .eyebrow{color:var(--fam)}
+fieldset{border:none;padding:0;margin:0;display:grid;gap:8px}
+legend{font-weight:600;margin-bottom:6px;padding:0}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{border:1px solid var(--line);border-radius:6px;padding:6px 12px;cursor:pointer;font-size:.9rem;background:var(--bg)}
+.seg input:checked + label{border-color:var(--accent);background:var(--accent-soft);color:var(--ink);font-weight:600}
+.seg input:focus-visible + label{outline:2px solid var(--accent);outline-offset:2px}
+.result{background:var(--surface);border:2px solid var(--accent);border-radius:10px;padding:20px;display:grid;gap:16px;align-content:start}
+.combo{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:var(--s1);font-weight:700}
+.combo span{padding:4px 12px;border-radius:8px;background:var(--fam-bg);color:var(--fam)}
+.combo i{font-style:normal;color:var(--muted);font-weight:500}
+.rank{display:grid;gap:10px;list-style:none;padding:0;margin:0}
+.rank li{display:grid;grid-template-columns:110px 1fr 40px;gap:10px;align-items:center;font-size:.92rem}
+.bar{height:10px;background:var(--grid);border-radius:999px;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--accent);border-radius:999px;transition:width .3s}
+@media (prefers-reduced-motion: reduce){.bar span{transition:none}}
+.rank .pct{font-family:var(--font-mono);font-size:var(--s-1);color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.note{font-size:.88rem;color:var(--muted)}
+.sub{font-weight:600;font-size:.95rem}
+
+/* glossary */
+.gloss{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0;border:1px solid var(--line);border-radius:10px;background:var(--surface);overflow:hidden;margin:0}
+.gloss div{padding:14px 16px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);min-width:0}
+.gloss dt{font-weight:600}
+.gloss dd{margin:2px 0 0;color:var(--muted);font-size:.9rem}
+
+footer{padding-block:32px 48px;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);margin-top:24px}
+
+@media (max-width:820px){
+  .hero{grid-template-columns:1fr;padding-block:40px 24px;gap:28px}
+  .hero-art svg{margin:0 auto;max-width:380px}
+  .fam-strip{grid-template-columns:1fr}
+  .fam-strip a{border-right:none;border-bottom:1px solid var(--line);padding:11px 16px}
+  .fam-strip a:last-child{border-bottom:none}
+  .stats{gap:24px}
+  .chooser,.manifesto,.axes,.callouts{grid-template-columns:1fr}
+  nav.links{margin-left:0;width:100%;overflow-x:auto;flex-wrap:nowrap}
+  nav.links a{white-space:nowrap}
+}
+@media (max-width:420px){
+  .cards{grid-template-columns:1fr}
+  .rank li{grid-template-columns:90px 1fr 36px}
+  :root{--s3:1.85rem;--s2:1.4rem}
+}
+</style>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#home"><span class="brand-mark" aria-hidden="true"></span>UML 가이드</a>
+    <nav class="links" role="tablist" aria-label="가이드 탭">
+      <a role="tab" href="#home" data-tab="home">홈</a>
+      <a role="tab" href="#overview" data-tab="overview">한눈에 보기</a>
+      <a role="tab" href="#elements" data-tab="elements"><i class="dot d-trad"></i>구성 요소</a>
+      <a role="tab" href="#structure" data-tab="structure"><i class="dot d-struct"></i>구조 다이어그램</a>
+      <a role="tab" href="#behavior" data-tab="behavior"><i class="dot d-agile"></i>행위 다이어그램</a>
+      <span class="sep" aria-hidden="true"></span>
+      <a role="tab" href="#chooser" data-tab="chooser">비교·선택</a>
+      <a role="tab" href="#cert" data-tab="cert">자격증 대비</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero-band">
+    <div class="wrap hero">
+      <div class="hero-copy">
+        <div class="eyebrow">Unified Modeling Language · 1997 → 2017</div>
+        <h1>그림으로<br>약속하는 <span class="hl">설계</span>.</h1>
+        <p class="lead">UML은 설계를 그리는 공통 문법입니다. 다이어그램 14종은 <b>무엇이 있는가</b>(구조)와 <b>어떻게 움직이는가</b>(행위) 두 갈래로 나뉩니다. 기호 몇 개만 알면 대부분의 설계 문서를 읽을 수 있습니다.</p>
+        <div class="cta">
+          <a class="btn primary" href="#elements">관계 기호부터 보기</a>
+          <a class="btn ghost" href="#chooser">어떤 다이어그램을 쓸까</a>
+        </div>
+        <dl class="stats">
+          <div><dt>다이어그램</dt><dd>14</dd></div>
+          <div><dt>관계</dt><dd>6</dd></div>
+          <div><dt>사물</dt><dd>4</dd></div>
+        </dl>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 440 360">
+          <g font-size="13">
+            <rect x="140" y="20" width="160" height="96" rx="6" fill="var(--surface)" stroke="var(--f-struct)" stroke-width="1.5"/>
+            <line x1="140" y1="48" x2="300" y2="48" stroke="var(--f-struct)"/><line x1="140" y1="82" x2="300" y2="82" stroke="var(--f-struct)"/>
+            <text x="220" y="39" text-anchor="middle" font-weight="700" fill="var(--ink)">결제</text>
+            <text x="152" y="70" fill="var(--muted)" font-family="IBM Plex Mono, monospace" font-size="11.5">- 금액: int</text>
+            <text x="152" y="104" fill="var(--muted)" font-family="IBM Plex Mono, monospace" font-size="11.5">+ 승인(): bool</text>
+            <rect x="30" y="230" width="150" height="64" rx="6" fill="var(--surface)" stroke="var(--f-struct)" stroke-width="1.5"/><line x1="30" y1="258" x2="180" y2="258" stroke="var(--f-struct)"/><text x="105" y="249" text-anchor="middle" font-weight="700" fill="var(--ink)">카드결제</text>
+            <rect x="260" y="230" width="150" height="64" rx="6" fill="var(--surface)" stroke="var(--f-struct)" stroke-width="1.5"/><line x1="260" y1="258" x2="410" y2="258" stroke="var(--f-struct)"/><text x="335" y="249" text-anchor="middle" font-weight="700" fill="var(--ink)">계좌이체</text>
+          </g>
+          <g fill="none" stroke="var(--f-struct)" stroke-width="1.5"><path d="M105 230V170H335V230"/><path d="M220 170V132"/></g>
+          <polygon points="220,117 210,133 230,133" fill="var(--surface)" stroke="var(--f-struct)" stroke-width="1.5"/>
+          <text x="236" y="160" font-size="11.5" fill="var(--muted)">일반화</text>
+          <text x="20" y="336" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono, monospace">STRUCTURE · BEHAVIOR · NOTATION</text>
+        </svg>
+      </div>
+    </div>
+    <div class="wrap">
+      <nav class="fam-strip" aria-label="탭 바로가기" style="grid-template-columns:repeat(4,1fr)">
+        <a href="#elements"><i class="dot d-trad"></i><span>구성 요소</span><b>10</b></a>
+        <a href="#structure"><i class="dot d-struct"></i><span>구조 다이어그램</span><b>7</b></a>
+        <a href="#behavior"><i class="dot d-agile"></i><span>행위 다이어그램</span><b>7</b></a>
+        <a href="#cert"><i class="dot d-pattern"></i><span>자격증 대비</span><b>퀴즈</b></a>
+      </nav>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <!-- HOME -->
+    <section class="block" id="axes">
+      <div class="sec-head"><h2>두 갈래로 나눠 보기</h2><p>정지 사진과 동영상의 차이로 생각하면 쉽습니다.</p></div>
+      <div class="axes">
+        <div class="axis fam-struct">
+          <div class="eyebrow">정적 · 정지 사진</div>
+          <h3>구조 다이어그램</h3>
+          <p class="q">시스템에 <em>무엇이 있는가</em>?</p>
+          <div class="chips"><a class="chip" href="#structure">클래스</a><a class="chip" href="#structure">객체</a><a class="chip" href="#structure">컴포넌트</a><a class="chip" href="#structure">배포</a><a class="chip" href="#structure">패키지</a><a class="chip" href="#structure">복합 구조</a><a class="chip" href="#structure">프로파일</a></div>
+          <p class="analogy">건물 설계도의 평면도처럼, 어떤 방이 있고 어떻게 붙어 있는지 보여 줍니다.</p>
+        </div>
+        <div class="axis fam-agile">
+          <div class="eyebrow">동적 · 동영상</div>
+          <h3>행위 다이어그램</h3>
+          <p class="q">시스템이 <em>어떻게 움직이는가</em>?</p>
+          <div class="chips"><a class="chip" href="#behavior">유스케이스</a><a class="chip" href="#behavior">활동</a><a class="chip" href="#behavior">상태 머신</a><a class="chip" href="#behavior">시퀀스</a><a class="chip" href="#behavior">통신</a><a class="chip" href="#behavior">상호작용 개요</a><a class="chip" href="#behavior">타이밍</a></div>
+          <p class="analogy">사람들이 그 방을 어떤 순서로 오가는지, 문이 언제 열리는지를 보여 줍니다.</p>
+        </div>
+      </div>
+      <div class="callouts">
+        <div class="callout"><b>UML은 세 사람의 방법론을 합친 것입니다</b><span>럼바우(OMT), 부치, 야콥슨(OOSE)이 각자 쓰던 표기법을 1997년 OMG가 UML 1.1로 표준화했습니다. 2005년 UML 2.0에서 다이어그램이 14종으로 정리됐고, 현재 판은 2.5.1(2017)입니다.</span></div>
+        <div class="callout"><b>정보처리기사 출제 범위 표시 <span class="exam">기출</span></b><span>이 가이드는 실무 이해를 위한 자료입니다. 출제 항목에는 기출 표시를 붙였고, 모아 보려면 <a href="#cert">자격증 대비</a> 탭을 여세요.</span><label class="exam-toggle" for="examToggle"><input type="checkbox" id="examToggle" checked> 기출 표시 보기</label></div>
+      </div>
+    </section>
+
+    <!-- OVERVIEW -->
+    <section class="block" id="overview">
+      <div class="sec-head"><h2>한눈에 보기</h2><p>다이어그램 14종 지도와 항목 요약. 상자를 누르면 설명으로 이동합니다.</p></div>
+      <nav class="jump" aria-label="이 탭 안의 섹션">이 탭 안에서 <a href="#overview">다이어그램 지도</a><a href="#glossary">핵심 용어</a></nav>
+      <div class="flow">
+        <svg viewBox="0 0 980 300" role="img" aria-label="UML 다이어그램 14종을 구조 7종과 행위 7종으로 나눈 지도">
+          <g fill="none" stroke="var(--muted)" stroke-width="1.25">
+            <path d="M490 64V84H250V104"/><path d="M490 84H730V104"/>
+            <path d="M250 144V160"/><path d="M730 144V160"/><path d="M820 214V226"/>
+          </g>
+          <g font-size="13.5" text-anchor="middle" font-weight="700">
+            <rect x="380" y="24" width="220" height="40" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/><text x="490" y="49" fill="var(--ink)">UML 2.5 다이어그램 14</text>
+            <a href="#structure"><rect x="150" y="104" width="200" height="40" rx="8" fill="var(--f-struct-bg)" stroke="var(--f-struct)" stroke-width="1.5"/><text x="250" y="129" fill="var(--ink)">구조 다이어그램 7</text></a>
+            <a href="#behavior"><rect x="630" y="104" width="200" height="40" rx="8" fill="var(--f-agile-bg)" stroke="var(--f-agile)" stroke-width="1.5"/><text x="730" y="129" fill="var(--ink)">행위 다이어그램 7</text></a>
+          </g>
+          <g font-size="12.5" text-anchor="middle">
+            <a href="#structure"><rect x="30" y="160" width="140" height="30" rx="15" fill="var(--surface)" stroke="var(--f-struct)" stroke-width="1.25"/><text x="100" y="180" fill="var(--ink)">클래스</text></a>
+            <a href="#structure"><rect x="180" y="160" width="140" height="30" rx="15" fill="var(--surface)" stroke="var(--f-struct)" stroke-width="1.25"/><text x="250" y="180" fill="var(--ink)">객체</text></a>
+            <a href="#structure"><rect x="330" y="160" width="140" height="30" rx="15" fill="var(--surface)" stroke="var(--f-struct)" stroke-width="1.25"/><text x="400" y="180" fill="var(--ink)">컴포넌트</text></a>
+            <a href="#structure"><rect x="30" y="200" width="140" height="30" rx="15" fill="var(--surface)" stroke="var(--f-struct)" stroke-width="1.25"/><text x="100" y="220" fill="var(--ink)">배포</text></a>
+            <a href="#structure"><rect x="180" y="200" width="140" height="30" rx="15" fill="var(--surface)" stroke="var(--f-struct)" stroke-width="1.25"/><text x="250" y="220" fill="var(--ink)">패키지</text></a>
+            <a href="#structure"><rect x="330" y="200" width="140" height="30" rx="15" fill="var(--surface)" stroke="var(--f-struct)" stroke-width="1.25"/><text x="400" y="220" fill="var(--ink)">복합 구조</text></a>
+            <a href="#structure"><rect x="180" y="240" width="140" height="30" rx="15" fill="var(--surface)" stroke="var(--f-struct)" stroke-width="1.25"/><text x="250" y="260" fill="var(--ink)">프로파일</text></a>
+            <a href="#behavior"><rect x="510" y="160" width="130" height="30" rx="15" fill="var(--surface)" stroke="var(--f-agile)" stroke-width="1.25"/><text x="575" y="180" fill="var(--ink)">유스케이스</text></a>
+            <a href="#behavior"><rect x="510" y="200" width="130" height="30" rx="15" fill="var(--surface)" stroke="var(--f-agile)" stroke-width="1.25"/><text x="575" y="220" fill="var(--ink)">활동</text></a>
+            <a href="#behavior"><rect x="510" y="240" width="130" height="30" rx="15" fill="var(--surface)" stroke="var(--f-agile)" stroke-width="1.25"/><text x="575" y="260" fill="var(--ink)">상태 머신</text></a>
+          </g>
+          <rect x="660" y="160" width="300" height="130" rx="10" fill="var(--f-agile-bg)" stroke="var(--f-agile)" stroke-dasharray="4 3"/>
+          <text x="676" y="180" font-size="12" font-weight="600" fill="var(--f-agile)">상호작용 다이어그램 4</text>
+          <g font-size="12.5" text-anchor="middle">
+            <a href="#behavior"><rect x="676" y="192" width="130" height="30" rx="15" fill="var(--surface)" stroke="var(--f-agile)" stroke-width="1.25"/><text x="741" y="212" fill="var(--ink)">시퀀스</text></a>
+            <a href="#behavior"><rect x="816" y="192" width="130" height="30" rx="15" fill="var(--surface)" stroke="var(--f-agile)" stroke-width="1.25"/><text x="881" y="212" fill="var(--ink)">통신</text></a>
+            <a href="#behavior"><rect x="676" y="236" width="130" height="30" rx="15" fill="var(--surface)" stroke="var(--f-agile)" stroke-width="1.25"/><text x="741" y="256" fill="var(--ink)">상호작용 개요</text></a>
+            <a href="#behavior"><rect x="816" y="236" width="130" height="30" rx="15" fill="var(--surface)" stroke="var(--f-agile)" stroke-width="1.25"/><text x="881" y="256" fill="var(--ink)">타이밍</text></a>
+          </g>
+        </svg>
+      </div>
+      <p class="flow-note">왼쪽 7종은 무엇이 있는지, 오른쪽 7종은 어떻게 움직이는지를 그립니다. 오른쪽 점선 안 4종은 객체끼리 주고받는 메시지를 다룹니다.</p>
+      <div class="ov">
+        <section class="fam-trad"><h3><a href="#elements">구성 요소</a><small>10</small><span class="exam">기출</span></h3><ul>
+          <li><b>사물 4</b><span>구조, 행동, 그룹, 주해</span></li>
+          <li><b>관계 6</b><span>연관, 집합, 합성, 일반화, 의존, 실체화</span></li>
+          <li><b>다중성</b><span>1, 0..1, *, 1..*</span></li>
+          <li><b>가시성</b><span>+ public, - private, # protected, ~ package</span></li>
+        </ul></section>
+        <section class="fam-struct"><h3><a href="#structure">구조 다이어그램</a><small>7</small><span class="exam">기출</span></h3><ul>
+          <li><b>클래스</b><span>클래스와 관계, 가장 많이 씀</span></li>
+          <li><b>객체</b><span>특정 시점의 인스턴스</span></li>
+          <li><b>컴포넌트</b><span>부품과 인터페이스</span></li>
+          <li><b>배포</b><span>서버·장비에 올라간 모습</span></li>
+          <li><b>패키지</b><span>요소를 묶은 폴더</span></li>
+          <li><b>복합 구조</b><span>클래스 내부 구성</span></li>
+          <li><b>프로파일</b><span>UML을 확장하는 규칙</span></li>
+        </ul></section>
+        <section class="fam-agile"><h3><a href="#behavior">행위 다이어그램</a><small>7</small><span class="exam">기출</span></h3><ul>
+          <li><b>유스케이스</b><span>누가 무엇을 하는가</span></li>
+          <li><b>활동</b><span>처리 흐름, 순서도</span></li>
+          <li><b>상태 머신</b><span>상태와 전이</span></li>
+          <li><b>시퀀스</b><span>시간 순서의 메시지</span></li>
+          <li><b>통신</b><span>객체 연결 중심의 메시지</span></li>
+          <li><b>상호작용 개요</b><span>상호작용들의 흐름</span></li>
+          <li><b>타이밍</b><span>시간에 따른 상태 변화</span></li>
+        </ul></section>
+        <section class="fam-pattern"><h3>도구</h3><ul>
+          <li><b><a href="#compare">비교</a></b><span>헷갈리는 다이어그램 짝</span></li>
+          <li><b><a href="#chooser">선택 도우미</a></b><span>보여 줄 것 → 다이어그램</span></li>
+          <li><b><a href="#glossary">용어</a></b><span>핵심 용어 (이 탭 아래)</span></li>
+          <li><b><a href="#cert">자격증 대비</a></b><span>출제 범위와 셀프 퀴즈</span></li>
+        </ul></section>
+      </div>
+    </section>
+
+    <!-- ELEMENTS -->
+    <section class="block fam-trad" id="elements">
+      <div class="family">
+        <div class="eyebrow">문법 · 단어와 연결</div>
+        <h2>구성 요소 <span class="exam">기출</span></h2>
+        <p class="desc">UML은 사물(단어), 관계(연결), 다이어그램(문장)으로 이루어집니다. 관계 기호 6개를 구분하는 것이 UML 읽기의 절반입니다.</p>
+      </div>
+      <nav class="jump" aria-label="이 탭 안의 섹션">이 탭 안에서 <a href="#rel">관계 6</a><a href="#things">사물 4</a><a href="#marks">다중성·가시성</a></nav>
+
+      <h3 class="sub-h" id="rel">관계 6가지 <small>선과 끝 모양으로 구분합니다</small></h3>
+      <div class="cards">
+        <article class="card"><div class="card-top"><div><h3>연관 <span class="exam">기출</span></h3><div class="en">Association</div></div><span class="year">실선</span></div>
+          <div class="fig"><svg viewBox="0 0 240 56" aria-label="학생과 강의가 실선으로 연결"><g font-size="12" text-anchor="middle"><rect x="6" y="14" width="74" height="28" rx="4" fill="var(--surface)" stroke="var(--ink)"/><text x="43" y="32" fill="var(--ink)">학생</text><rect x="160" y="14" width="74" height="28" rx="4" fill="var(--surface)" stroke="var(--ink)"/><text x="197" y="32" fill="var(--ink)">강의</text></g><line x1="80" y1="28" x2="160" y2="28" stroke="var(--ink)" stroke-width="1.5"/><text x="88" y="22" font-size="10.5" fill="var(--muted)">*</text><text x="146" y="22" font-size="10.5" fill="var(--muted)">*</text></svg></div>
+          <p>두 클래스가 서로 알고 지내는 관계입니다. 방향이 있으면 끝에 화살표를 붙입니다.</p><dl class="kv"><dt>예</dt><dd>학생은 여러 강의를 듣는다</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>집합 <span class="exam">기출</span></h3><div class="en">Aggregation</div></div><span class="year">빈 마름모</span></div>
+          <div class="fig"><svg viewBox="0 0 240 56" aria-label="팀 쪽에 빈 마름모, 선수와 연결"><g font-size="12" text-anchor="middle"><rect x="6" y="14" width="74" height="28" rx="4" fill="var(--surface)" stroke="var(--ink)"/><text x="43" y="32" fill="var(--ink)">팀</text><rect x="160" y="14" width="74" height="28" rx="4" fill="var(--surface)" stroke="var(--ink)"/><text x="197" y="32" fill="var(--ink)">선수</text></g><line x1="104" y1="28" x2="160" y2="28" stroke="var(--ink)" stroke-width="1.5"/><polygon points="80,28 92,21 104,28 92,35" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/></svg></div>
+          <p>전체와 부분 관계지만 <b>부분이 따로 살 수 있습니다</b>. 마름모는 전체 쪽에 붙입니다.</p><dl class="kv"><dt>예</dt><dd>팀이 없어져도 선수는 남는다</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>합성 <span class="exam">기출</span></h3><div class="en">Composition</div></div><span class="year">찬 마름모</span></div>
+          <div class="fig"><svg viewBox="0 0 240 56" aria-label="집 쪽에 찬 마름모, 방과 연결"><g font-size="12" text-anchor="middle"><rect x="6" y="14" width="74" height="28" rx="4" fill="var(--surface)" stroke="var(--ink)"/><text x="43" y="32" fill="var(--ink)">집</text><rect x="160" y="14" width="74" height="28" rx="4" fill="var(--surface)" stroke="var(--ink)"/><text x="197" y="32" fill="var(--ink)">방</text></g><line x1="104" y1="28" x2="160" y2="28" stroke="var(--ink)" stroke-width="1.5"/><polygon points="80,28 92,21 104,28 92,35" fill="var(--ink)" stroke="var(--ink)" stroke-width="1.5"/></svg></div>
+          <p>전체와 부분이 <b>생명을 같이합니다</b>. 전체가 사라지면 부분도 사라집니다.</p><dl class="kv"><dt>예</dt><dd>집을 허물면 방도 없어진다</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>일반화 <span class="exam">기출</span></h3><div class="en">Generalization</div></div><span class="year">빈 삼각형</span></div>
+          <div class="fig"><svg viewBox="0 0 240 56" aria-label="고양이에서 동물로 빈 삼각형 화살표"><g font-size="12" text-anchor="middle"><rect x="6" y="14" width="74" height="28" rx="4" fill="var(--surface)" stroke="var(--ink)"/><text x="43" y="32" fill="var(--ink)">고양이</text><rect x="160" y="14" width="74" height="28" rx="4" fill="var(--surface)" stroke="var(--ink)"/><text x="197" y="32" fill="var(--ink)">동물</text></g><line x1="80" y1="28" x2="146" y2="28" stroke="var(--ink)" stroke-width="1.5"/><polygon points="160,28 146,20 146,36" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/></svg></div>
+          <p>"~는 ~의 한 종류다"(is-a) 관계, 곧 상속입니다. 삼각형은 부모 쪽을 가리킵니다.</p><dl class="kv"><dt>예</dt><dd>고양이는 동물이다</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>의존 <span class="exam">기출</span></h3><div class="en">Dependency</div></div><span class="year">점선 화살표</span></div>
+          <div class="fig"><svg viewBox="0 0 240 56" aria-label="주문에서 결제로 점선 화살표"><g font-size="12" text-anchor="middle"><rect x="6" y="14" width="74" height="28" rx="4" fill="var(--surface)" stroke="var(--ink)"/><text x="43" y="32" fill="var(--ink)">주문</text><rect x="160" y="14" width="74" height="28" rx="4" fill="var(--surface)" stroke="var(--ink)"/><text x="197" y="32" fill="var(--ink)">결제</text></g><line x1="80" y1="28" x2="158" y2="28" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="5 4"/><polyline points="148,21 159,28 148,35" fill="none" stroke="var(--ink)" stroke-width="1.5"/></svg></div>
+          <p>잠깐 빌려 쓰는 관계입니다. 상대가 바뀌면 나도 영향을 받습니다. 매개변수나 지역 변수로 쓸 때입니다.</p><dl class="kv"><dt>예</dt><dd>주문 처리 중에 결제 기능을 호출</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>실체화 <span class="exam">기출</span></h3><div class="en">Realization</div></div><span class="year">점선 삼각형</span></div>
+          <div class="fig"><svg viewBox="0 0 240 56" aria-label="카드결제에서 결제 인터페이스로 점선 빈 삼각형"><g font-size="12" text-anchor="middle"><rect x="6" y="14" width="74" height="28" rx="4" fill="var(--surface)" stroke="var(--ink)"/><text x="43" y="32" fill="var(--ink)">카드결제</text><rect x="160" y="14" width="74" height="28" rx="4" fill="var(--surface)" stroke="var(--ink)"/><text x="197" y="27" font-size="9.5" fill="var(--muted)">«interface»</text><text x="197" y="38" fill="var(--ink)">결제</text></g><line x1="80" y1="28" x2="146" y2="28" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="5 4"/><polygon points="160,28 146,20 146,36" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/></svg></div>
+          <p>인터페이스가 약속한 기능을 클래스가 실제로 구현하는 관계입니다(can-do).</p><dl class="kv"><dt>예</dt><dd>카드결제가 결제 인터페이스를 구현</dd></dl></article>
+      </div>
+
+      <h3 class="sub-h" id="things">사물 4가지 <small>다이어그램에 올라가는 단어</small></h3>
+      <div class="cards">
+        <article class="card"><div class="card-top"><div><h3>구조 사물 <span class="exam">기출</span></h3><div class="en">Structural Things</div></div></div><p>시스템의 개념적·물리적 요소입니다.</p><dl class="kv"><dt>예</dt><dd>클래스, 인터페이스, 유스케이스, 컴포넌트, 노드</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>행동 사물 <span class="exam">기출</span></h3><div class="en">Behavioral Things</div></div></div><p>시간과 공간에 따라 일어나는 동작입니다.</p><dl class="kv"><dt>예</dt><dd>상호작용(메시지), 상태 머신</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>그룹 사물 <span class="exam">기출</span></h3><div class="en">Grouping Things</div></div></div><p>요소를 묶는 상자입니다.</p><dl class="kv"><dt>예</dt><dd>패키지</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>주해 사물 <span class="exam">기출</span></h3><div class="en">Annotational Things</div></div></div><p>설명을 덧붙이는 메모입니다. 귀퉁이가 접힌 상자로 그립니다.</p><dl class="kv"><dt>예</dt><dd>노트(Note)</dd></dl></article>
+      </div>
+
+      <h3 class="sub-h" id="marks">다중성과 가시성 <small>선 끝과 이름 앞의 작은 기호</small></h3>
+      <div class="memo">
+        <div><b>다중성 <span class="exam">기출</span></b><ul><li><code>1</code> 정확히 하나</li><li><code>0..1</code> 없거나 하나</li><li><code>*</code> 또는 <code>0..*</code> 0개 이상</li><li><code>1..*</code> 1개 이상</li></ul></div>
+        <div><b>가시성 <span class="exam">기출</span></b><ul><li><code>+</code> public: 어디서나</li><li><code>-</code> private: 자기 클래스만</li><li><code>#</code> protected: 자기 + 자식</li><li><code>~</code> package: 같은 패키지</li></ul></div>
+        <div><b>스테레오타입</b><p><code>«interface»</code>, <code>«include»</code>처럼 겹화살괄호로 요소의 성격을 덧붙입니다.</p></div>
+      </div>
+    </section>
+
+    <!-- STRUCTURE -->
+    <section class="block fam-struct" id="structure">
+      <div class="family">
+        <div class="eyebrow">정적 · 무엇이 있는가</div>
+        <h2>구조 다이어그램 7 <span class="exam">기출</span></h2>
+        <p class="desc">시스템을 이루는 요소와 그 연결을 그립니다. 실무에서는 클래스, 컴포넌트, 배포, 패키지를 주로 씁니다.</p>
+      </div>
+      <div class="cards">
+        <article class="card"><div class="card-top"><div><h3>클래스 다이어그램 <span class="exam">기출</span></h3><div class="en">Class</div></div><span class="year">가장 많이 씀</span></div>
+          <div class="fig"><svg viewBox="0 0 240 104" aria-label="이름, 속성, 연산 세 칸으로 나뉜 클래스 상자"><rect x="50" y="6" width="140" height="92" rx="4" fill="var(--surface)" stroke="var(--ink)"/><line x1="50" y1="32" x2="190" y2="32" stroke="var(--ink)"/><line x1="50" y1="66" x2="190" y2="66" stroke="var(--ink)"/><text x="120" y="24" font-size="12.5" text-anchor="middle" font-weight="700" fill="var(--ink)">주문</text><g font-size="10.5" font-family="IBM Plex Mono, monospace" fill="var(--muted)"><text x="58" y="47">- 번호: int</text><text x="58" y="60">- 금액: int</text><text x="58" y="82">+ 결제(): bool</text></g><g font-size="10" fill="var(--muted)"><text x="196" y="24">이름</text><text x="196" y="52">속성</text><text x="196" y="84">연산</text></g></svg></div>
+          <p>클래스의 이름, 속성, 연산과 클래스 사이의 관계를 그립니다. 코드 구조와 가장 가깝습니다.</p><dl class="kv"><dt>언제</dt><dd>도메인 모델, DB·코드 설계</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>객체 다이어그램 <span class="exam">기출</span></h3><div class="en">Object</div></div></div><p>특정 순간의 실제 인스턴스와 값을 그립니다. 이름에 밑줄을 긋습니다(<u>주문1: 주문</u>).</p><dl class="kv"><dt>언제</dt><dd>클래스 설계를 예시 데이터로 검증할 때</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>컴포넌트 다이어그램 <span class="exam">기출</span></h3><div class="en">Component</div></div></div><p>독립 배포되는 부품과 그 인터페이스를 그립니다. 제공 인터페이스는 원(○), 요구 인터페이스는 반원(◡)입니다.</p><dl class="kv"><dt>언제</dt><dd>모듈·서비스 경계 설계, CBD</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>배포 다이어그램 <span class="exam">기출</span></h3><div class="en">Deployment</div></div></div><p>소프트웨어가 어떤 서버·장비(노드)에 올라가 어떻게 통신하는지 그립니다. 노드는 입체 상자로 그립니다.</p><dl class="kv"><dt>언제</dt><dd>인프라 구성, 운영 환경 문서</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>패키지 다이어그램 <span class="exam">기출</span></h3><div class="en">Package</div></div></div><p>관련 요소를 폴더 모양 상자로 묶고 패키지 사이 의존을 그립니다.</p><dl class="kv"><dt>언제</dt><dd>큰 시스템의 계층·모듈 구조 정리</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>복합 구조 다이어그램 <span class="exam">기출</span></h3><div class="en">Composite Structure</div></div></div><p>클래스 하나의 내부를 열어 부품(part)과 연결(port, connector)을 그립니다.</p><dl class="kv"><dt>언제</dt><dd>복잡한 컴포넌트의 내부 협력 설명</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>프로파일 다이어그램</h3><div class="en">Profile</div></div></div><p>특정 분야에 맞게 UML을 확장하는 스테레오타입과 규칙을 정의합니다.</p><dl class="kv"><dt>언제</dt><dd>회사·도메인 전용 모델링 규칙을 만들 때</dd></dl></article>
+      </div>
+    </section>
+
+    <!-- BEHAVIOR -->
+    <section class="block fam-agile" id="behavior">
+      <div class="family">
+        <div class="eyebrow">동적 · 어떻게 움직이는가</div>
+        <h2>행위 다이어그램 7 <span class="exam">기출</span></h2>
+        <p class="desc">시간에 따른 흐름과 상호작용을 그립니다. 유스케이스, 활동, 시퀀스, 상태 머신 네 가지를 가장 많이 씁니다.</p>
+      </div>
+      <div class="cards">
+        <article class="card"><div class="card-top"><div><h3>유스케이스 다이어그램 <span class="exam">기출</span></h3><div class="en">Use Case</div></div></div>
+          <div class="fig"><svg viewBox="0 0 240 104" aria-label="액터 사람 모양이 시스템 경계 안의 주문하기 타원과 연결"><g stroke="var(--ink)" stroke-width="1.5" fill="none"><circle cx="30" cy="30" r="8"/><path d="M30 38V64M16 48H44M30 64L18 82M30 64L42 82"/></g><text x="30" y="98" font-size="10.5" text-anchor="middle" fill="var(--muted)">고객</text><rect x="92" y="8" width="140" height="88" rx="4" fill="none" stroke="var(--muted)" stroke-dasharray="4 3"/><text x="100" y="22" font-size="10" fill="var(--muted)">쇼핑몰</text><ellipse cx="162" cy="54" rx="56" ry="18" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/><text x="162" y="58" font-size="12" text-anchor="middle" fill="var(--ink)">주문하기</text><line x1="46" y1="52" x2="106" y2="54" stroke="var(--ink)" stroke-width="1.5"/></svg></div>
+          <p>사용자(액터)가 시스템으로 무엇을 하는지 기능 단위로 그립니다. 요구사항 도출 단계에서 많이 씁니다.</p><dl class="kv"><dt>관계</dt><dd>«include» 반드시 포함, «extend» 조건부 확장</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>활동 다이어그램 <span class="exam">기출</span></h3><div class="en">Activity</div></div></div>
+          <div class="fig"><svg viewBox="0 0 240 104" aria-label="시작점에서 주문 확인, 재고 판단 마름모, 출고와 끝점으로 이어지는 흐름"><defs><marker id="ac-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--ink)"/></marker></defs><circle cx="16" cy="40" r="7" fill="var(--ink)"/><rect x="34" y="27" width="64" height="26" rx="13" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/><text x="66" y="44" font-size="11" text-anchor="middle" fill="var(--ink)">주문 확인</text><polygon points="124,40 136,30 148,40 136,50" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/><rect x="166" y="27" width="46" height="26" rx="13" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/><text x="189" y="44" font-size="11" text-anchor="middle" fill="var(--ink)">출고</text><circle cx="189" cy="88" r="8" fill="none" stroke="var(--ink)" stroke-width="1.5"/><circle cx="189" cy="88" r="4.5" fill="var(--ink)"/><g stroke="var(--ink)" stroke-width="1.25" fill="none" marker-end="url(#ac-arrow)"><path d="M23 40H33"/><path d="M98 40H123"/><path d="M148 40H165"/><path d="M189 53V79"/><path d="M136 50V88H180"/></g><text x="150" y="34" font-size="9" fill="var(--muted)">있음</text><text x="140" y="70" font-size="9" fill="var(--muted)">없음</text></svg></div>
+          <p>처리 흐름을 순서도처럼 그립니다. 조건 분기, 병렬 처리, 담당자별 구획(스윔레인)을 표현합니다.</p><dl class="kv"><dt>언제</dt><dd>업무 절차, 알고리즘 흐름</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>상태 머신 다이어그램 <span class="exam">기출</span></h3><div class="en">State Machine</div></div></div>
+          <div class="fig"><svg viewBox="0 0 240 70" aria-label="결제대기, 배송중, 완료 상태가 이벤트로 전이"><defs><marker id="st-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--ink)"/></marker></defs><g font-size="11" text-anchor="middle"><rect x="4" y="22" width="64" height="28" rx="12" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/><text x="36" y="40" fill="var(--ink)">결제대기</text><rect x="88" y="22" width="64" height="28" rx="12" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/><text x="120" y="40" fill="var(--ink)">배송중</text><rect x="172" y="22" width="64" height="28" rx="12" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/><text x="204" y="40" fill="var(--ink)">완료</text></g><g stroke="var(--ink)" stroke-width="1.25" fill="none" marker-end="url(#st-arrow)"><path d="M68 36H87"/><path d="M152 36H171"/></g><text x="78" y="16" font-size="9" text-anchor="middle" fill="var(--muted)">결제</text><text x="162" y="16" font-size="9" text-anchor="middle" fill="var(--muted)">도착</text></svg></div>
+          <p>객체 하나가 이벤트에 따라 상태를 바꿔 가는 모습을 그립니다.</p><dl class="kv"><dt>언제</dt><dd>주문·결제처럼 상태가 중요한 객체</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>시퀀스 다이어그램 <span class="exam">기출</span></h3><div class="en">Sequence</div></div></div>
+          <div class="fig"><svg viewBox="0 0 240 110" aria-label="고객, 주문, 결제 생명선 사이에 시간 순서로 오가는 메시지"><defs><marker id="sq-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--ink)"/></marker></defs><g font-size="11" text-anchor="middle"><rect x="10" y="4" width="56" height="22" rx="3" fill="var(--surface)" stroke="var(--ink)"/><text x="38" y="19" fill="var(--ink)">:고객</text><rect x="92" y="4" width="56" height="22" rx="3" fill="var(--surface)" stroke="var(--ink)"/><text x="120" y="19" fill="var(--ink)">:주문</text><rect x="174" y="4" width="56" height="22" rx="3" fill="var(--surface)" stroke="var(--ink)"/><text x="202" y="19" fill="var(--ink)">:결제</text></g><g stroke="var(--muted)" stroke-dasharray="3 3"><line x1="38" y1="26" x2="38" y2="106"/><line x1="120" y1="26" x2="120" y2="106"/><line x1="202" y1="26" x2="202" y2="106"/></g><rect x="116" y="40" width="8" height="54" fill="var(--surface)" stroke="var(--ink)"/><g stroke="var(--ink)" stroke-width="1.25" fill="none"><path d="M38 44H114" marker-end="url(#sq-arrow)"/><path d="M124 62H200" marker-end="url(#sq-arrow)"/><path d="M200 80H126" stroke-dasharray="4 3" marker-end="url(#sq-arrow)"/></g><g font-size="9.5" fill="var(--muted)"><text x="46" y="40">주문하기()</text><text x="130" y="58">승인()</text><text x="146" y="76">결과</text></g></svg></div>
+          <p>객체들이 <b>시간 순서대로</b> 주고받는 메시지를 위에서 아래로 그립니다. 실선은 호출, 점선은 응답입니다.</p><dl class="kv"><dt>요소</dt><dd>생명선, 활성 상자, 메시지, 조건 블록(alt, loop)</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>통신 다이어그램 <span class="exam">기출</span></h3><div class="en">Communication</div></div></div><p>시퀀스와 같은 메시지를 <b>객체 사이 연결</b>을 중심으로 그립니다. 순서는 메시지 앞 번호(1, 1.1, 2)로 표시합니다. 예전 이름은 협력 다이어그램입니다.</p><dl class="kv"><dt>언제</dt><dd>누가 누구와 연결돼 있는지가 중요할 때</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>상호작용 개요 다이어그램 <span class="exam">기출</span></h3><div class="en">Interaction Overview</div></div></div><p>활동 다이어그램 형식으로 여러 상호작용(시퀀스 조각)의 흐름을 엮어 큰 그림을 보여 줍니다.</p><dl class="kv"><dt>언제</dt><dd>시퀀스 여러 장을 한 장으로 연결할 때</dd></dl></article>
+        <article class="card"><div class="card-top"><div><h3>타이밍 다이어그램 <span class="exam">기출</span></h3><div class="en">Timing</div></div></div><p>가로축 시간에 따라 객체 상태가 언제 바뀌는지 그립니다. 시간 제약이 있는 시스템에 씁니다.</p><dl class="kv"><dt>언제</dt><dd>임베디드, 통신 프로토콜, 실시간 시스템</dd></dl></article>
+      </div>
+    </section>
+
+    <!-- COMPARE -->
+    <section class="block" id="compare">
+      <div class="sec-head"><h2>헷갈리는 다이어그램 짝</h2><p>비슷해 보이지만 보여 주려는 것이 다릅니다.</p></div>
+      <div class="table-wrap">
+        <table class="pairs">
+          <thead><tr><th>짝</th><th>앞의 것</th><th>뒤의 것</th></tr></thead>
+          <tbody>
+            <tr><td>시퀀스 / 통신</td><td>시간 순서가 중심 (위→아래)</td><td>객체 연결이 중심 (번호로 순서)</td></tr>
+            <tr><td>활동 / 상태 머신</td><td>여러 일이 이어지는 처리 흐름</td><td>객체 하나의 상태 변화</td></tr>
+            <tr><td>클래스 / 객체</td><td>설계도, 일반적인 구조</td><td>특정 순간의 실제 인스턴스</td></tr>
+            <tr><td>컴포넌트 / 배포</td><td>소프트웨어 부품과 인터페이스</td><td>부품이 올라간 서버·장비</td></tr>
+            <tr><td>집합 / 합성</td><td>빈 마름모, 부분이 따로 살 수 있음</td><td>찬 마름모, 전체와 생명을 같이함</td></tr>
+            <tr><td>일반화 / 실체화</td><td>실선 + 빈 삼각형, 상속(is-a)</td><td>점선 + 빈 삼각형, 인터페이스 구현</td></tr>
+            <tr><td>«include» / «extend»</td><td>항상 포함되는 기능</td><td>조건이 맞을 때만 덧붙는 기능</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CHOOSER -->
+    <section class="block" id="chooser">
+      <div class="sec-head"><h2>선택 도우미</h2><p>보여 주고 싶은 것을 고르면 맞는 다이어그램을 추천합니다.</p></div>
+      <div class="chooser">
+        <form class="q-panel fam-struct" id="cform">
+          <fieldset><legend>무엇을 보여 주고 싶나요?</legend><div class="seg" style="flex-direction:column;align-items:flex-start">
+            <input type="radio" name="need" id="n1" value="who" checked><label for="n1">사용자가 시스템으로 무엇을 할 수 있는지</label>
+            <input type="radio" name="need" id="n2" value="data"><label for="n2">어떤 데이터·클래스가 있고 어떻게 연결되는지</label>
+            <input type="radio" name="need" id="n3" value="call"><label for="n3">기능 하나가 실행될 때 누가 누구를 호출하는지</label>
+            <input type="radio" name="need" id="n4" value="flow"><label for="n4">업무 절차나 처리 순서</label>
+            <input type="radio" name="need" id="n5" value="state"><label for="n5">주문처럼 상태가 바뀌는 대상의 규칙</label>
+            <input type="radio" name="need" id="n6" value="infra"><label for="n6">어떤 서버에 무엇이 올라가는지</label>
+            <input type="radio" name="need" id="n7" value="module"><label for="n7">큰 시스템의 모듈 경계와 의존</label>
+          </div></fieldset>
+        </form>
+        <div class="result" aria-live="polite">
+          <div class="eyebrow">추천 다이어그램</div>
+          <div class="combo"><span class="fam-agile" id="cPick">유스케이스</span></div>
+          <p class="note" id="cWhy"></p>
+          <div class="sub">함께 그리면 좋은 것</div>
+          <p class="note" id="cAlso"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- GLOSSARY -->
+    <section class="block" id="glossary">
+      <div class="sec-head"><h2>핵심 용어</h2><p>UML 문서를 읽을 때 자주 나오는 말입니다.</p></div>
+      <dl class="gloss">
+        <div><dt>OMG</dt><dd>UML 표준을 관리하는 단체</dd></div>
+        <div><dt>액터 <span class="exam">기출</span></dt><dd>시스템 밖에서 상호작용하는 사람·시스템</dd></div>
+        <div><dt>생명선 <span class="exam">기출</span></dt><dd>시퀀스에서 객체가 존재하는 기간(점선)</dd></div>
+        <div><dt>활성 상자 <span class="exam">기출</span></dt><dd>객체가 일을 처리하는 구간(세로 막대)</dd></div>
+        <div><dt>메시지 <span class="exam">기출</span></dt><dd>객체 사이에 보내는 호출이나 신호</dd></div>
+        <div><dt>스윔레인</dt><dd>활동 다이어그램의 담당자별 구획</dd></div>
+        <div><dt>노드 <span class="exam">기출</span></dt><dd>배포 다이어그램의 서버·장비</dd></div>
+        <div><dt>인터페이스</dt><dd>구현 없이 기능만 약속한 형식</dd></div>
+        <div><dt>스테레오타입 <span class="exam">기출</span></dt><dd>«»로 요소의 성격을 확장하는 표기</dd></div>
+        <div><dt>다중성 <span class="exam">기출</span></dt><dd>관계에 참여하는 개수(1, 0..1, *)</dd></div>
+        <div><dt>가시성 <span class="exam">기출</span></dt><dd>속성·연산에 접근할 수 있는 범위</dd></div>
+        <div><dt>포워드·리버스 엔지니어링</dt><dd>모델 → 코드 생성 / 코드 → 모델 복원</dd></div>
+      </dl>
+    </section>
+
+    <!-- CERT -->
+    <section class="block" id="cert">
+      <div class="sec-head"><h2>자격증 대비 <span class="exam">기출</span></h2><p>정보처리기사 출제 범위에 드는 내용만 모았습니다.</p></div>
+      <h3 class="sub-h">출제 범위 한눈에</h3>
+      <div class="cert-list">
+        <section class="fam-trad"><h4><a href="#elements">구성 요소</a></h4><ul><li>사물 4</li><li>관계 6</li><li>다중성</li><li>가시성</li><li>스테레오타입</li></ul></section>
+        <section class="fam-struct"><h4><a href="#structure">구조 다이어그램</a></h4><ul><li>클래스</li><li>객체</li><li>컴포넌트</li><li>배포</li><li>패키지</li><li>복합 구조</li></ul></section>
+        <section class="fam-agile"><h4><a href="#behavior">행위 다이어그램</a></h4><ul><li>유스케이스</li><li>활동</li><li>상태 머신</li><li>시퀀스</li><li>통신</li><li>상호작용 개요</li><li>타이밍</li></ul></section>
+      </div>
+      <h3 class="sub-h">분류 정리표</h3>
+      <div class="memo">
+        <div><b>구조 다이어그램<small>7</small></b><p>클래스, 객체, 컴포넌트, 배포, 패키지, 복합 구조, 프로파일</p></div>
+        <div><b>행위 다이어그램<small>7</small></b><p>유스케이스, 활동, 상태 머신, 시퀀스, 통신, 상호작용 개요, 타이밍</p></div>
+        <div><b>관계 기호<small>6</small></b><ul><li>연관: 실선</li><li>집합: 실선 + 빈 마름모</li><li>합성: 실선 + 찬 마름모</li><li>일반화: 실선 + 빈 삼각형</li><li>의존: 점선 + 열린 화살표</li><li>실체화: 점선 + 빈 삼각형</li></ul></div>
+        <div><b>사물<small>4</small></b><p>구조 사물, 행동 사물, 그룹 사물, 주해 사물</p></div>
+        <div><b>가시성<small>4</small></b><p>+ public, - private, # protected, ~ package</p></div>
+        <div><b>시퀀스 구성 요소</b><p>액터, 객체, 생명선, 활성 상자(실행), 메시지, 조건 블록</p></div>
+      </div>
+      <p class="note">헷갈리는 짝은 <a href="#compare">비교·선택</a> 탭의 표에 정리해 두었습니다.</p>
+      <h3 class="sub-h">셀프 퀴즈 <small>한 번에 10문제</small></h3>
+      <div class="quiz" id="quiz" aria-live="polite"></div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">UML 2.5.1(2017) 기준입니다. 교재에 따라 프로파일 다이어그램을 빼고 13종으로 세기도 합니다.</div>
+</footer>
+
+<script>
+window.PAGE={
+  order:['home','overview','elements','structure','behavior','chooser','cert'],
+  names:{home:'홈',overview:'한눈에 보기',elements:'구성 요소',structure:'구조 다이어그램',behavior:'행위 다이어그램',chooser:'비교·선택',cert:'자격증 대비'},
+  panels:{home:['hero','axes'],overview:['overview','glossary'],elements:['elements'],structure:['structure'],behavior:['behavior'],chooser:['compare','chooser'],cert:['cert']},
+  alias:{glossary:'overview',compare:'chooser',axes:'home',rel:'elements',things:'elements',marks:'elements'},
+  chooser:{
+    who:['유스케이스','액터와 기능을 한 장에 보여 주어 범위를 합의하기 좋습니다.','기능마다 활동 다이어그램으로 흐름을 덧붙이세요.'],
+    data:['클래스','데이터와 관계를 코드에 가장 가깝게 보여 줍니다.','예시 데이터 검증이 필요하면 객체 다이어그램을 함께 그리세요.'],
+    call:['시퀀스','호출 순서를 시간 축으로 보여 주어 누가 무엇을 언제 부르는지 바로 보입니다.','연결 관계가 더 중요하면 통신 다이어그램으로 바꿔 그리세요.'],
+    flow:['활동','분기와 병렬, 담당자 구획까지 순서도처럼 표현합니다.','여러 시퀀스를 엮어야 하면 상호작용 개요 다이어그램을 쓰세요.'],
+    state:['상태 머신','어떤 이벤트에 어떤 상태로 바뀌는지 규칙을 빠짐없이 보여 줍니다.','시간 제약까지 있으면 타이밍 다이어그램을 더하세요.'],
+    infra:['배포','서버, 장비, 네트워크 위에 소프트웨어가 어떻게 놓이는지 보여 줍니다.','올라가는 부품은 컴포넌트 다이어그램으로 먼저 정리하세요.'],
+    module:['패키지','요소를 폴더처럼 묶고 패키지 간 의존을 보여 줍니다.','각 패키지 안은 클래스 다이어그램이나 컴포넌트 다이어그램으로 그리세요.']
+  },
+  quiz:{key:'uml',
+    groups:{
+      struct:[['클래스의 이름·속성·연산과 관계를 그린다','클래스'],['특정 순간의 실제 인스턴스와 값을 그린다','객체'],['독립 배포되는 부품과 인터페이스를 그린다','컴포넌트'],['소프트웨어가 올라간 서버·장비를 그린다','배포'],['관련 요소를 폴더처럼 묶는다','패키지'],['클래스 하나의 내부 부품과 연결을 그린다','복합 구조']],
+      behav:[['액터가 시스템으로 할 수 있는 기능을 그린다','유스케이스'],['처리 흐름을 순서도처럼 그린다','활동'],['객체 하나가 이벤트에 따라 상태를 바꾸는 모습','상태 머신'],['객체 사이 메시지를 시간 순서로 그린다','시퀀스'],['객체 연결 중심으로 메시지를 번호와 함께 그린다','통신'],['시간축에 따른 상태 변화를 그린다','타이밍'],['여러 상호작용의 흐름을 엮어 큰 그림을 그린다','상호작용 개요']],
+      rel:[['실선으로 두 클래스가 서로 아는 관계','연관'],['빈 마름모, 부분이 따로 살 수 있는 전체-부분','집합'],['찬 마름모, 전체와 생명을 같이하는 부분','합성'],['실선 + 빈 삼각형, 상속(is-a)','일반화'],['점선 + 열린 화살표, 잠깐 빌려 쓰는 관계','의존'],['점선 + 빈 삼각형, 인터페이스를 구현','실체화']],
+      vis:[['+ 기호의 가시성','public'],['- 기호의 가시성','private'],['# 기호의 가시성','protected'],['~ 기호의 가시성','package']],
+      thing:[['클래스, 유스케이스, 컴포넌트 같은 요소','구조 사물'],['상호작용, 상태 머신 같은 동작','행동 사물'],['요소를 묶는 패키지','그룹 사물'],['설명을 덧붙이는 노트','주해 사물']]
+    },
+    kinds:{struct:'구조 다이어그램',behav:'행위 다이어그램',rel:'관계',vis:'가시성',thing:'사물'},
+    areas:{all:['전체',['struct','behav','rel','vis','thing']],diag:['다이어그램',['struct','behav']],notation:['관계·기호',['rel','vis','thing']]}
+  }
+};
+</script>
+
+<script>
+// 가이드 공통 스크립트: 탭 전환, 기출 표시 토글, 셀프 퀴즈, 선택 도우미
+// 페이지마다 window.PAGE = {order, names, panels, alias, quiz:{groups, kinds, areas}, chooser:{answers}} 를 먼저 정의한다.
+(function(){
+  var C=window.PAGE;
+  function $id(i){return document.getElementById(i);}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+  // ---- 기출 표시 토글 ----
+  var et=$id('examToggle');
+  if(et){
+    try{if(localStorage.getItem('hideExam')==='1'){et.checked=false;document.body.classList.add('hide-exam');}}catch(e){}
+    et.addEventListener('change',function(){document.body.classList.toggle('hide-exam',!et.checked);try{localStorage.setItem('hideExam',et.checked?'0':'1');}catch(e){}});
+  }
+
+  // ---- 선택 도우미: 라디오 값 → 결과 ----
+  var cf=$id('cform');
+  if(cf&&C.chooser){
+    var calcC=function(){
+      var el=cf.querySelector('input[name="need"]:checked');var r=C.chooser[el?el.value:Object.keys(C.chooser)[0]];
+      $id('cPick').textContent=r[0];$id('cWhy').textContent=r[1];$id('cAlso').textContent=r[2];
+    };
+    cf.addEventListener('change',calcC);cf.addEventListener('submit',function(e){e.preventDefault();});calcC();
+  }
+
+  // ---- 셀프 퀴즈 ----
+  var quiz=$id('quiz');
+  if(quiz&&C.quiz){
+    var QG=C.quiz.groups,KIND=C.quiz.kinds,AREAS=C.quiz.areas,area='all',qs=[],qi=0,score=0,wrong=[],answered=false,KEY=(C.quiz.key||'q');
+    var shuffle=function(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;};
+    var buildPool=function(){
+      var pool=[];
+      AREAS[area][1].forEach(function(g){
+        var items=QG[g],names=items.map(function(x){return x[1];});
+        items.forEach(function(it){
+          var others=shuffle(names.filter(function(n){return n!==it[1];})).slice(0,3);
+          pool.push({kind:KIND[g],q:it[0],a:it[1],choices:shuffle(others.concat([it[1]]))});
+        });
+      });
+      return pool;
+    };
+    var best=function(){try{return localStorage.getItem(KEY+'-best-'+area);}catch(e){return null;}};
+    var saveBest=function(s){try{var b=+best()||0;if(s>b)localStorage.setItem(KEY+'-best-'+area,String(s));}catch(e){}};
+    var areaBar=function(){return '<div class="quiz-top"><div class="quiz-areas" role="group" aria-label="출제 영역">'+Object.keys(AREAS).map(function(k){return '<button type="button" data-area="'+k+'" aria-pressed="'+(k===area)+'">'+AREAS[k][0]+'</button>';}).join('')+'</div><span class="qprog">'+(best()!==null?'최고 기록 '+best()+' / '+qs.length:'아직 기록 없음')+'</span></div>';};
+    var start=function(list){qs=list;qi=0;score=0;wrong=[];renderQ();};
+    var newRound=function(){start(shuffle(buildPool()).slice(0,10));};
+    var renderQ=function(){
+      answered=false;var q=qs[qi];
+      quiz.innerHTML=areaBar()+'<div class="qbar"><span style="width:'+(qi/qs.length*100)+'%"></span></div><div class="qprog">'+(qi+1)+' / '+qs.length+' · 맞힌 수 '+score+'</div><div class="qkind">'+esc(q.kind)+'</div><div class="qtext">'+esc(q.q)+'</div><div class="qchoices">'+q.choices.map(function(c){return '<button type="button" data-c="'+esc(c)+'">'+esc(c)+'</button>';}).join('')+'</div><div class="qfeed" id="qfeed"></div><div class="qactions"><button type="button" class="qbtn primary" id="qnext" hidden>'+(qi===qs.length-1?'결과 보기':'다음 문제')+'</button></div>';
+    };
+    var renderEnd=function(){
+      saveBest(score);
+      quiz.innerHTML=areaBar()+'<div class="qbar"><span style="width:100%"></span></div><div><div class="qprog">결과</div><div class="qscore">'+score+' / '+qs.length+'</div></div>'+(wrong.length?'<div class="sub">틀린 문제</div><ul class="qwrong">'+wrong.map(function(w){return '<li>'+esc(w.q)+' → <b>'+esc(w.a)+'</b></li>';}).join('')+'</ul>':'<p class="note">모두 맞혔습니다.</p>')+'<div class="qactions">'+(wrong.length?'<button type="button" class="qbtn primary" id="qretry">틀린 문제 다시 풀기</button>':'')+'<button type="button" class="qbtn'+(wrong.length?'':' primary')+'" id="qnew">새 문제 10개</button></div>';
+    };
+    quiz.addEventListener('click',function(e){
+      var b=e.target.closest('button');if(!b)return;
+      if(b.hasAttribute('data-area')){area=b.getAttribute('data-area');newRound();return;}
+      if(b.id==='qnew'){newRound();return;}
+      if(b.id==='qretry'){start(shuffle(wrong).map(function(w){return {kind:w.kind,q:w.q,a:w.a,choices:shuffle(w.choices)};}));return;}
+      if(b.id==='qnext'){qi++;if(qi<qs.length)renderQ();else renderEnd();return;}
+      if(b.hasAttribute('data-c')&&!answered){
+        answered=true;var q=qs[qi],ok=b.getAttribute('data-c')===q.a;
+        quiz.querySelectorAll('.qchoices button').forEach(function(x){x.disabled=true;if(x.getAttribute('data-c')===q.a)x.classList.add('right');});
+        var fb=$id('qfeed');
+        if(ok){score++;fb.className='qfeed ok';fb.textContent='정답입니다.';}
+        else{b.classList.add('wrong');wrong.push(q);fb.className='qfeed no';fb.textContent='오답입니다. 정답은 '+q.a+'입니다.';}
+        var nx=$id('qnext');nx.hidden=false;nx.focus();
+      }
+    });
+    newRound();
+  }
+
+  // ---- 탭 (클릭으로 직접 전환, 가능한 곳에서만 주소 # 갱신) ----
+  var order=C.order,names=C.names,alias=C.alias||{},panels={};
+  Object.keys(C.panels).forEach(function(k){panels[k]=C.panels[k].map(function(id){return id==='hero'?document.querySelector('.hero-band'):$id(id);}).filter(Boolean);});
+  var tabs=document.querySelectorAll('nav.links [data-tab]'),cur=order[0];
+  var container=$id(C.pagerAfter||'top');
+  var pager=document.createElement('nav');pager.className='tab-pager';pager.setAttribute('aria-label','이전·다음 탭');
+  document.querySelector('main > .wrap').appendChild(pager);
+  function resolve(k){return panels[k]?k:(alias[k]||order[0]);}
+  function jumpTo(k){if(alias[k]){var el=$id(k);if(el)el.scrollIntoView({block:'start'});}}
+  function show(key,scroll){
+    key=resolve(key);cur=key;
+    order.forEach(function(k){panels[k].forEach(function(el){el.hidden=(k!==key);});});
+    tabs.forEach(function(t){var on=t.getAttribute('data-tab')===key;t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;});
+    var i=order.indexOf(key),h='';
+    if(i>0)h+='<a class="prev" href="#'+order[i-1]+'"><small>← 이전</small>'+names[order[i-1]]+'</a>';
+    if(i<order.length-1)h+='<a class="next" href="#'+order[i+1]+'"><small>다음 →</small>'+names[order[i+1]]+'</a>';
+    pager.innerHTML=h;
+    if(scroll)window.scrollTo({top:0,behavior:'instant'});
+  }
+  function current(){var h='';try{h=location.hash;}catch(e){}return (h||'#'+order[0]).slice(1);}
+  function go(key){
+    if(!panels[key]&&!alias[key])return;
+    var tab=resolve(key);
+    if(tab!==cur||!alias[key])show(tab,true);
+    jumpTo(key);
+    try{if(location.protocol!=='data:'&&location.hash!=='#'+tab)location.hash=tab;}catch(e){}
+  }
+  document.addEventListener('click',function(e){
+    var a=e.target.closest?e.target.closest('a[href^="#"]'):null;if(!a)return;
+    var key=a.getAttribute('href').slice(1);
+    if(panels[key]||alias[key]){e.preventDefault();go(key);}
+  });
+  window.addEventListener('hashchange',function(){var k=current(),t=resolve(k);if(t!==cur){show(t,true);jumpTo(k);}});
+  document.querySelector('nav.links').addEventListener('keydown',function(e){
+    if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;
+    var i=order.indexOf(cur);i=(i+(e.key==='ArrowRight'?1:-1)+order.length)%order.length;
+    go(order[i]);tabs[i].focus();e.preventDefault();
+  });
+  show(current(),false);jumpTo(current());
+})();
+</script>
+</body>
+</html>
